@@ -6,9 +6,10 @@
  * @access public
  * @param mixed $needle Key to search for
  * @param array $haystack Array to search in
+ * @param mixed $default Default value if not found. Default is null
  * @return mixed|null The value from the array; otherwise, null
  */
-function arrayGet($needle, &$haystack)
+function arrayGet($needle, &$haystack, $default = null)
 {
-    return array_key_exists($needle, $haystack) ? $haystack[$needle] : null;
+    return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
 }
