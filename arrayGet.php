@@ -7,7 +7,7 @@
  * @param mixed $needle Key to search for
  * @param array $haystack Array to search in
  * @param mixed $default Default value if not found. Default is null
- * @return mixed|null The value from the array; otherwise, null
+ * @return mixed|null The value from the array; otherwise, $default on error
  */
 function arrayGet($needle, &$haystack, $default = null)
 {
