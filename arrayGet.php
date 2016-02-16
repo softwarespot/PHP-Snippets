@@ -8,7 +8,7 @@
  * @param array $haystack Array to search in
  * @return mixed|null The value from the array; otherwise, null
  */
-function array_get($needle, &$haystack)
+function arrayGet($needle, &$haystack)
 {
     return array_key_exists($needle, $haystack) ? $haystack[$needle] : null;
 }
