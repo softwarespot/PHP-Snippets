@@ -10,5 +10,5 @@ function getRequestJSON($default = null)
 {
     $contents = file_get_contents('php://input');
 
-    return $contents !== false ? json_decode($contents) : $default;
+    return $contents === false ? $default : json_decode($contents);
 }

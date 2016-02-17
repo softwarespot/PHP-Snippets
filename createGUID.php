@@ -8,6 +8,7 @@
  */
 function createGUID()
 {
+    // Use the native function if it exists
     if (function_exists('com_create_guid')) {
         return com_create_guid();
     }

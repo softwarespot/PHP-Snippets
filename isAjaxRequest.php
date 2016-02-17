@@ -9,6 +9,5 @@ function isAjaxRequest()
 {
     $request = $_SERVER['HTTP_X_REQUESTED_WITH'];
 
-    return !empty($request) &&
-        strtolower($request) === 'xmlhttprequest';
+    return !empty($request) && strtolower($request) === 'xmlhttprequest';
 }
