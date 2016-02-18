@@ -8,8 +8,12 @@
  */
 function createGUID()
 {
+    // Cache whether there is a native function available
+    static $_isNativeFn;
+
     // Use the native function if it exists
-    if (function_exists('com_create_guid')) {
+    if ($_isNativeFn || function_exists('com_create_guid')) {
+        $_isNativeFn = true;
         return com_create_guid();
     }
 
