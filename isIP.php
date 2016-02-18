@@ -8,9 +8,10 @@
  * @param string $type IP protocol: 'ipv4' or 'ipv6'
  * @return bool True, is a valid IP address; otherwise, false
  */
-function isValidIP($ip, $type = null)
+function isIP($ip, $type = null)
 {
-    switch (strtolower($type)) {
+    $ip = strtolower($type);
+    switch ($ip) {
         case 'ipv4':
             $type = FILTER_FLAG_IPV4;
             break;
