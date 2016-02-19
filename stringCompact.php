@@ -10,9 +10,9 @@
  */
 function stringCompact($value, $length = 0)
 {
-    if (strlen($value) <= $length) {
+    if (mb_strlen($value) <= $length) {
         return $value;
     }
 
-    return mb_substr($value, 0, $length) . '...';
+    return mb_strimwidth($value, 0, $length, '...');
 }

@@ -8,9 +8,9 @@
  * @param string Version number to check
  * @return boolean True, the supplied version is greater or equal to the current PHP version
  */
-function is_php($version)
+function isPHP($version)
 {
-    // Cache previous version numbers
+    // Cache the previous version numbers queried
     static $_isPHP;
 
     // Cast as a string

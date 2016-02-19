@@ -14,5 +14,5 @@ function toSnakeCase($value, $delimiter = '_')
     // Pre-append the delimiter before an upper-case character
     $value = preg_replace('/(.)(?=[A-Z])/', '$1' . $delimiter, $value);
 
-    return strtolower($value);
+    return mb_strtolower($value);
 }
