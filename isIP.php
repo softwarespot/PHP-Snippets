@@ -4,6 +4,7 @@
  * Validate an IP address
  * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Input.php
  *
+ * @access public
  * @param string $ip IP address to validated
  * @param string $type IP protocol: 'ipv4' or 'ipv6'
  * @return bool True, is a valid IP address; otherwise, false

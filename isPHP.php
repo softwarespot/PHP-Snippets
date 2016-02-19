@@ -4,6 +4,7 @@
  * Determines if the current version of PHP is equal to or greater than the supplied value
  * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Common.php
  *
+ * @access public
  * @param string Version number to check
  * @return boolean True, the supplied version is greater or equal to the current PHP version
  */

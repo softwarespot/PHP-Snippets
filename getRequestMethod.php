@@ -3,6 +3,7 @@
 /**
  * Get the request method
  *
+ * @access public
  * @param boolean $toUpperCase Convert the method to upper-case if true; otherwise, lower-case if false. Default is true
  * @return string Formatted request method
  */

@@ -3,6 +3,7 @@
 /**
  * Check if the request was an ajax request
  *
+ * @access public
  * @return boolean True, the request was an ajax request; otherwise, false
  */
 function isAjaxRequest()
