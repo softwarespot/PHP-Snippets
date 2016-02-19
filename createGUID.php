@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Create a GUID
+ * Generate a globally unique identifier (GUID)
  *
  * @access public
- * @return string Random GUID
+ * @return string Generated globally unique identifier (GUID)
  */
 function createGUID()
 {
@@ -14,9 +14,11 @@ function createGUID()
     // Use the native function if it exists
     if ($_isNativeFn || function_exists('com_create_guid')) {
         $_isNativeFn = true;
+
         return com_create_guid();
     }
 
+    // Generate a random GUID
     return sprintf(
         '%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
         mt_rand(0, 65535),

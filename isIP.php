@@ -7,7 +7,7 @@
  * @access public
  * @param string $ip IP address to validated
  * @param string $type IP protocol: 'ipv4' or 'ipv6'
- * @return bool True, is a valid IP address; otherwise, false
+ * @return boolean True, is a valid IP address; otherwise, false
  */
 function isIP($ip, $type = null)
 {
