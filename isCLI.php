@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Is the command-line interface (CLI)
+ * Check if accessed from the the command-line interface (CLI)
  * Idea by PHP, URL: http://php.net/manual/en/features.commandline.php
  *
  * @access public
