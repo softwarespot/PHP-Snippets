@@ -349,6 +349,21 @@ class Utils
     }
 
     /**
+     * Parse query parameters in a url string as an array
+     * Note: This is a wrapper for parse_str, because of ... URL: http://phpsadness.com/sad/27
+     *
+     * @param string $url URL string to parse
+     * @return array|null Parsed query parameters as an associative array; otherwise, null on error
+     */
+    public static function parseQueryParams($url)
+    {
+        $queryParams = null;
+        parse_str($url, $queryParams);
+
+        return empty($queryParams) ? null : $queryParams;
+    }
+
+    /**
      * Redirect to a url
      *
      * @access public
@@ -374,7 +389,7 @@ class Utils
     }
 
     /**
-     * Get the request body data
+     * Retrieve the request body data
      * URL: http://php.net/manual/en/wrappers.php.php#wrappers.php.input
      *
      * @access public
