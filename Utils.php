@@ -25,6 +25,8 @@ Utils::var_dump(Utils::toArray($class), 'toArray');
 
 Utils::var_dump($_GET, '$_GET');
 Utils::var_dump($_SERVER, '$_SERVER');
+Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
+Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
 // END: Example
 
 // TODO:
@@ -357,8 +359,12 @@ class Utils
      */
     public static function parseQueryParams($url)
     {
-        $queryParams = null;
-        parse_str($url, $queryParams);
+        if (empty($url)) {
+            return null;
+        }
+
+        $queryString = parse_url($url, PHP_URL_QUERY);
+        parse_str($queryString, $queryParams);
 
         return empty($queryParams) ? null : $queryParams;
     }
@@ -607,7 +613,7 @@ class Utils
      * @param mixed $value0...n Value(s) to coerce
      * @return array An new array with the zeroth element as the passed value; otherwise, the original array reference
      */
-    public static function toArray($value1 /*, $value2, $value3, $valuen*/)
+    public static function toArray($value /*, $value1, $value2, $valuen*/)
     {
         if (is_array($value)) {
             return $value;
