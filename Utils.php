@@ -5,7 +5,7 @@ namespace Utils;
 /**
  * A set of static utility functions
  *
- * Note: All string functions support UTF-8 string, unless Utils::defaultCharset is overridden
+ * Note: All string functions support UTF-8 strings, unless Utils::defaultCharset is overridden with another charset
  * Style: The coding style for this utility class is PSR-2
  */
 class Utils
