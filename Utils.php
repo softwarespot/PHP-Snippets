@@ -2,8 +2,17 @@
 
 namespace Utils;
 
+/**
+ * A set of static utility functions
+ *
+ * Note: All string functions support UTF-8 string, unless Utils::defaultCharset is overridden
+ * Style: The coding style for this utility class is PSR-2
+ */
 class Utils
 {
+    // Default charset
+    protected static $defaultCharset = 'UTF-8';
+
     /**
      * Generate a globally unique identifier (GUID)
      *
@@ -34,6 +43,33 @@ class Utils
             mt_rand(0, 65535),
             mt_rand(0, 65535)
         );
+    }
+
+    /**
+     * Returns a HTML escaped variable
+     * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Common.php
+     *
+     * @access public
+     * @param mixed $value The input string or array of strings to be escaped
+     * @param boolean $doubleEncode Set to true to escape twice. Default is false
+     * @return mixed The escaped string or array of strings
+     */
+    public static function htmlEscape($value, $doubleEncode = false)
+    {
+        if (empty($value)) {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            // There is little performance difference between using $key => $value and array_keys()
+            foreach (array_keys($value) as $key) {
+                $value[$key] = html_escape($value[$key], $doubleEncode);
+            }
+
+            return $value;
+        }
+
+        return htmlspecialchars($value, ENT_QUOTES, self::$defaultCharset, $doubleEncode);
     }
 
     /**
@@ -82,11 +118,11 @@ class Utils
      */
     public static function isHTTPS()
     {
-        if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+        if (!isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
             return true;
         } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
             return true;
-        } elseif (!empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
+        } elseif (!isset($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
             return true;
         }
 
@@ -105,6 +141,7 @@ class Utils
     public static function isIPAddress($ip, $type = null)
     {
         $ip = strtolower($type);
+
         switch ($ip) {
             case 'ipv4':
                 $type = FILTER_FLAG_IPV4;
@@ -139,6 +176,22 @@ class Utils
     }
 
     /**
+     * Wrapper for checking a variable is set and using the value if so
+     *
+     * @access public
+     * @param mixed $value Value to check
+     * @param mixed $default Default value to use if not set
+     * @return mixed If set, then the value of the variable; otherwise, the default value
+     */
+    public static function isSet($value, $default)
+    {
+        // PHP 7
+        // return $value ?? $default;
+
+        return isset($value) ? $value : $default;
+    }
+
+    /**
      * Check if a valid url. Compliant with the RFC 2396 specification
      *
      * @access public
@@ -159,19 +212,59 @@ class Utils
      */
     public static function isUTF8($value)
     {
-        return mb_check_encoding($value, 'UTF-8');
+        return mb_check_encoding($value, self::$defaultCharset);
+    }
+
+    /**
+     * Redirect to a url
+     *
+     * @access public
+     * @param string $url Url to redirect to
+     * @param boolean $validate Validate the url being redirected to. Default is true
+     * @return undefined
+     */
+    public static function redirect($url, $validate = true)
+    {
+        // Ensure $validate is always true by default if a boolean datatype isn't passed
+        if ($validate !== false && !self::isURL($url)) {
+            return;
+        }
+
+        header("Location: $url");
+    }
+
+    /**
+     * Get the request body data
+     * URL: http://php.net/manual/en/wrappers.php.php#wrappers.php.input
+     *
+     * @access public
+     * @return mixed|null Request body data; otherwise, null on error
+     */
+    public static function requestBody()
+    {
+        static $_input;
+
+        // Cache the request body
+        if (!isset($_input)) {
+            $_input = file_get_contents('php://input');
+            if ($_input === false) {
+                $_input = null;
+            }
+        }
+
+        return $_input;
     }
 
     /**
      * Get the request body as a JSON object
      *
      * @access public
-     * @param mixed $default Default value if an error occurs. Default is null
+     * @param mixed $default Default value to return if an error occurs. Default is null
      * @return object|null JSON object; otherwise, $default on error
      */
     public static function requestJSON($default = null)
     {
-        $contents = file_get_contents('php://input');
+        $contents = self::requestBody();
 
         return $contents === false ? $default : json_decode($contents);
     }
@@ -201,7 +294,7 @@ class Utils
     public static function strCompact($value, $length = 0)
     {
         // Better than using mb_strlen
-        if (mb_strwidth($value) <= $length) {
+        if ($length === 0 || mb_strwidth($value) <= $length) {
             return $value;
         }
 
@@ -246,7 +339,7 @@ class Utils
      */
     public static function strToLower($value)
     {
-        return mb_strtolower($value, 'UTF-8');
+        return mb_strtolower($value, self::$defaultCharset);
     }
 
     /**
@@ -258,7 +351,7 @@ class Utils
      */
     public static function strToTitle($value)
     {
-        return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
+        return mb_convert_case($value, MB_CASE_TITLE, self::$defaultCharset);
     }
 
     /**
@@ -270,7 +363,7 @@ class Utils
      */
     public static function strToUpper($value)
     {
-        return mb_strtoupper($value, 'UTF-8');
+        return mb_strtoupper($value, self::$defaultCharset);
     }
 
     /**
@@ -288,5 +381,21 @@ class Utils
         $value = preg_replace('/(.)(?=[A-Z])/', '$1' . $delimiter, $value);
 
         return mb_strtolower($value);
+    }
+
+    /**
+     * Coerce a value to an array if not already an array
+     *
+     * @access public
+     * @param mixed $value Value to coerce
+     * @return array An new array with the zeroth element as the passed value; otherwise, the original array reference
+     */
+    public static function toArray($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return [$value];
     }
 }
