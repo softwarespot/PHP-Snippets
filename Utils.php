@@ -209,7 +209,7 @@ class Utils
     }
 
     /**
-     * Retrieve the length of the given string
+     * Retrieve the length of a given string
      *
      * @access public
      * @param string $value String to check
