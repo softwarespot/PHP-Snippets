@@ -215,7 +215,7 @@ class Utils
      * @param string $value String to check
      * @return integer String value length
      */
-    public static function length($value)
+    public static function strLen($value)
     {
         return mb_strlen($value);
     }
