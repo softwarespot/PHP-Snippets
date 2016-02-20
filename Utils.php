@@ -221,18 +221,6 @@ class Utils
     }
 
     /**
-     * Convert a string to lower-case
-     *
-     * @access public
-     * @param string $value String to change to lower-case
-     * @return string Lower-case string
-     */
-    public static function strToLower($value)
-    {
-        return mb_strtolower($value, 'UTF-8');
-    }
-
-    /**
      * Convert a snake case string to camel case string
      * Idea by Laravel, URL: https://github.com/laravel/framework/blob/master/src/Illuminate/Support/Str.php
      *
@@ -247,6 +235,30 @@ class Utils
         $value =  str_replace(' ', '', $value);
 
         return lcfirst($value);
+    }
+
+    /**
+     * Convert a string to lower-case
+     *
+     * @access public
+     * @param string $value String to change to lower-case
+     * @return string Lower-case string
+     */
+    public static function strToLower($value)
+    {
+        return mb_strtolower($value, 'UTF-8');
+    }
+
+    /**
+     * Convert a string to title-case
+     *
+     * @access public
+     * @param string $value String to change to title-case
+     * @return string Title-case string
+     */
+    public static function strToTitle($value)
+    {
+        return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
     }
 
     /**
