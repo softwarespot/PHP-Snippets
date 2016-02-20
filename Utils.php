@@ -745,7 +745,7 @@ class Utils
      * @param mixed|null $needle Optional key to search for. If left null/undefined, then the entire array is deep cloned
      * @return array|mixed Either a deep cloned array or the value of the key; otherwise an empty array or null on error
      */
-    private static function _arrayFetchAll(&$haystack, $needle = null)
+    private static function _arrayFetchAll(array &$haystack, $needle = null)
     {
         // If null/undefined, then assume the array should be deep cloned
         if (!isset($needle)) {
