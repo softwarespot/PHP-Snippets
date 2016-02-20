@@ -7,24 +7,24 @@ namespace Utils;
 use Utils\Utils;
 
 $utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
-Utils::dump(Utils::clientIPAddress(), 'clientIPAddress');
-Utils::dump(Utils::guid(), 'guid');
-Utils::dump(Utils::isFloat(100), 'isFloat');
-Utils::dump(Utils::isInteger(100), 'isInteger');
-Utils::dump(Utils::isPHP('5.6'), 'isPHP');
-Utils::dump(Utils::isUTF8($utf8String), 'isUTF8');
-Utils::dump(Utils::strCompact($utf8String, 40), 'strCompact');
-Utils::dump(Utils::strToLower($utf8String), 'strToLower');
-Utils::dump(Utils::strToUpper($utf8String), 'strToUpper');
-Utils::dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
+Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
+Utils::var_dump(Utils::guid(), 'guid');
+Utils::var_dump(Utils::isFloat(100), 'isFloat');
+Utils::var_dump(Utils::isInteger(100), 'isInteger');
+Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
+Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
+Utils::var_dump(Utils::strCompact($utf8String, 40), 'strCompact');
+Utils::var_dump(Utils::strToLower($utf8String), 'strToLower');
+Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
+Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
 
 $class = new \stdClass;
 $class->foo = 100;
 $class->bar = 200;
-Utils::dump(Utils::toArray($class), 'toArray');
+Utils::var_dump(Utils::toArray($class), 'toArray');
 
-Utils::dump($_GET, '$_GET');
-Utils::dump($_SERVER, '$_SERVER');
+Utils::var_dump($_GET, '$_GET');
+Utils::var_dump($_SERVER, '$_SERVER');
 // END: Example
 
 // TODO:
@@ -53,11 +53,11 @@ class Utils
      *
      * @access public
      * @param mixed $needle Key to search for
-     * @param array $haystack Array to search in
+     * @param array $haystack Array to search within
      * @param mixed $default Default value if not found. Default is null
      * @return mixed|null The value from the array; otherwise, $default on error
      */
-    public static function arrayGet($needle, &$haystack, $default = null)
+    public static function arrayGet($needle, array &$haystack, $default = null)
     {
         // Using array_key_exists() denotes if the key actually exists
         return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
@@ -74,37 +74,19 @@ class Utils
         // Maybe use this in the future, URL: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
         // Or URL: https://github.com/paste/Utils/blob/master/src/Paste/Utils.php#L165
 
-        return self::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return static::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
     /**
-     * Dump variable data in a clear format
-     * Idea by Joost van Veen, URL: https://gist.github.com/accentinteractive/3838495
+     * Get the content type
      *
-     * @access public
-     * @param mixed $data Data to dump
-     * @param string $label Label to output next to the data. Default is 'dump'
-     * @param boolean $echo True to echo to the output or return as a buffer string
-     * @return string|undefined If $echo is true, then the data is output; otherwise, a buffer string is returned
+     * @return string|null Content type string; otherwise, null on error
      */
-    public static function dump($data, $label = 'dump', $echo = true)
+    public static function contentType()
     {
-        // Store dump data in a buffer
-        ob_start();
-        var_dump($data);
-        $output = ob_get_clean();
+        $contentType = $_SERVER['CONTENT_TYPE'];
 
-        // Add appropriate formatting
-        $reAddWS = '/\]\=\>\n(\s+)/m';
-        $output = preg_replace($reAddWS, '] => ', $output);
-        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; margin: 10px 0; padding: 10px; text-align: left; white-space: pre-wrap;\">$label => $output</pre>";
-
-        // Return the current buffer, maintaining the default value
-        if ($echo === false) {
-            return $output;
-        }
-
-        echo $output;
+        return empty($contentType) ? null : $contentType;
     }
 
     /**
@@ -115,7 +97,7 @@ class Utils
      */
     public static function dd($data, $label = 'dump')
     {
-        echo self::dump($data, $label, false);
+        echo static::var_dump($data, $label, false);
         exit;
     }
 
@@ -176,7 +158,7 @@ class Utils
             return $value;
         }
 
-        return htmlspecialchars($value, ENT_QUOTES, self::$characterSet, $doubleEncode);
+        return htmlspecialchars($value, ENT_QUOTES, static::$characterSet, $doubleEncode);
     }
 
     /**
@@ -284,11 +266,11 @@ class Utils
         $ip = strtolower($type);
 
         switch ($ip) {
-            case self::IP_ADDRESS_V4:
+            case static::IP_ADDRESS_V4:
                 $type = FILTER_FLAG_IPV4;
                 break;
 
-            case self::IP_ADDRESS_V6:
+            case static::IP_ADDRESS_V6:
                 $type = FILTER_FLAG_IPV6;
                 break;
 
@@ -360,7 +342,7 @@ class Utils
      */
     public static function isUTF8($value)
     {
-        return mb_check_encoding($value, self::$characterSet);
+        return mb_check_encoding($value, static::$characterSet);
     }
 
     /**
@@ -375,7 +357,7 @@ class Utils
     public static function redirect($url, $permanant = false, $validate = true)
     {
         // Ensure $validate is always true by default if a boolean datatype isn't passed
-        if ($validate !== false && !self::isURL($url)) {
+        if ($validate !== false && !static::isURL($url)) {
             return;
         }
 
@@ -411,6 +393,18 @@ class Utils
     }
 
     /**
+     * Get the $_GET request data
+     *
+     * @access public
+     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_GET array
+     * @return array|mixed Value of the key or a deep clone of the $_GET array; otherwise, null or an empty array on error
+     */
+    public static function requestGET($index = null)
+    {
+        return static::_arrayFetchAll($_GET, $index);
+    }
+
+    /**
      * Get the request body as a JSON object
      *
      * @access public
@@ -419,7 +413,7 @@ class Utils
      */
     public static function requestJSON($default = null)
     {
-        $contents = self::requestBody();
+        $contents = static::requestBody();
 
         return $contents === false ? $default : json_decode($contents);
     }
@@ -436,6 +430,42 @@ class Utils
         $method = $_SERVER['REQUEST_METHOD'];
 
         return $toUpperCase === false ? strtolower($method) : strtoupper($method);
+    }
+
+    /**
+     * Get the $_POST request data
+     *
+     * @access public
+     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_POST array
+     * @return array|mixed Value of the key or a deep clone of the $_POST array; otherwise, null or an empty array on error
+     */
+    public static function requestPOST($index = null)
+    {
+        return static::_arrayFetchAll($_POST, $index);
+    }
+
+    /**
+     * Get the $_REQUEST request data
+     *
+     * @access public
+     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_REQUEST array
+     * @return array|mixed Value of the key or a deep clone of the $_REQUEST array; otherwise, null or an empty array on error
+     */
+    public static function requestREQUEST($index = null)
+    {
+        return static::_arrayFetchAll($_REQUEST, $index);
+    }
+
+     /**
+     * Get the $_SERVER request data
+     *
+     * @access public
+     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_SERVER array
+     * @return array|mixed Value of the key or a deep clone of the $_SERVER array; otherwise, null or an empty array on error
+     */
+    public static function requestSERVER($index = null)
+    {
+        return static::_arrayFetchAll($_SERVER, $index);
     }
 
     /**
@@ -494,7 +524,7 @@ class Utils
      */
     public static function strToLower($value)
     {
-        return mb_strtolower($value, self::$characterSet);
+        return mb_strtolower($value, static::$characterSet);
     }
 
     /**
@@ -506,7 +536,7 @@ class Utils
      */
     public static function strToTitle($value)
     {
-        return mb_convert_case($value, MB_CASE_TITLE, self::$characterSet);
+        return mb_convert_case($value, MB_CASE_TITLE, static::$characterSet);
     }
 
     /**
@@ -518,7 +548,7 @@ class Utils
      */
     public static function strToUpper($value)
     {
-        return mb_strtoupper($value, self::$characterSet);
+        return mb_strtoupper($value, static::$characterSet);
     }
 
     /**
@@ -556,7 +586,7 @@ class Utils
         }
 
         $args = [];
-        foreach(func_get_args() as $arg) {
+        foreach (func_get_args() as $arg) {
             $args[] = $arg;
         }
 
@@ -631,5 +661,70 @@ class Utils
         fclose($handle);
 
         return $csv;
+    }
+
+    /**
+     * Dump variable data in a clear format
+     * Idea by Joost van Veen, URL: https://gist.github.com/accentinteractive/3838495
+     *
+     * @access public
+     * @param mixed $data Data to dump
+     * @param string $label Label to output next to the data. Default is 'dump'
+     * @param boolean $echo True to echo to the output or return as a buffer string
+     * @return string|undefined If $echo is true, then the data is output; otherwise, a buffer string is returned
+     */
+    public static function var_dump($data, $label = 'dump', $echo = true)
+    {
+        // Store dump data in a buffer
+        ob_start();
+        var_dump($data);
+        $output = ob_get_clean();
+
+        // Add appropriate formatting
+        $reAddWS = '/\]\=\>\n(\s+)/m';
+        $output = preg_replace($reAddWS, '] => ', $output);
+        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; margin: 10px 0; padding: 10px; text-align: left; white-space: pre-wrap;\">$label => $output</pre>";
+
+        // Return the current buffer, maintaining the default value
+        if ($echo === false) {
+            return $output;
+        }
+
+        echo $output;
+    }
+
+    // Internal functions
+
+    /**
+     * Get a value from an array based on a particular key or a deep cloned array
+     *
+     * @access public
+     * @param array $haystack Array to search within
+     * @param mixed|null $needle Optional key to search for. If left null/undefined, then the entire array is deep cloned
+     * @return array|mixed Either a deep cloned array or the value of the key; otherwise an empty array or null on error
+     */
+    private static function _arrayFetchAll(&$haystack, $needle = null)
+    {
+        // If null/undefined, then assume the array should be deep cloned
+        if (!isset($needle)) {
+            $needle = array_keys($haystack);
+        }
+
+        // Enumerate over the array copying all values, including nested arrays
+        if (is_array($needle)) {
+            $array = [];
+
+            foreach ($needle as $key) {
+                $array[$key] = static::_arrayFetchAll($haystack, $key);
+            }
+
+            return $array;
+        }
+
+        if (isset($haystack[$needle])) {
+            return $haystack[$needle];
+        }
+
+        return null;
     }
 }
