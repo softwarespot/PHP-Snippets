@@ -198,7 +198,7 @@ class Utils
      * @param integer $length Length to trim at
      * @return string Compact string; otherwise, original string
      */
-    public static function stringCompact($value, $length = 0)
+    public static function strCompact($value, $length = 0)
     {
         // Better than using mb_strlen
         if (mb_strwidth($value) <= $length) {
