@@ -474,4 +474,73 @@ class Utils
 
         return [$value];
     }
+
+    /**
+     * Convert an array to a comma separated value (CSV) string
+     * Idea by metashock, URL: http://www.metashock.de/2014/02/create-csv-file-in-memory-php/
+     *
+     * @access public
+     * @param mixed $data Data to convert
+     * @param string $delimiter The optional delimiter parameter sets the field delimiter (one character only). Null will use the default value (,)
+     * @param string $enclosure The optional enclosure parameter sets the field enclosure (one character only). Null will use the default value (")
+     * @return string A CSV string; otherwise, null on error
+     */
+    public static function toCSV($data, $delimiter = ',', $enclosure = '"')
+    {
+        // Use a threshold of 1 MB (1024 * 1024)
+        $handle = fopen('php://temp/maxmemory:1048576', 'w');
+        if ($handle === false) {
+            return null;
+        }
+
+        // Check the default arguments
+        if ($delimiter === null) {
+            $delimiter = ',';
+        }
+
+        if ($enclosure === null) {
+            $enclosure = '"';
+        }
+
+        // Cast as an array if not already
+        if (!is_array($data)) {
+            $data = (array) $data;
+        }
+
+        // Check if it's a multi-dimensional array
+        if (isset($data[0]) && count($data) !== count($data, COUNT_RECURSIVE)) {
+            $headings = array_keys($data[0]);
+        } else {
+            // Single array
+            $headings = array_keys($data);
+            $data = [$data];
+        }
+
+        // Apply the headings
+        fputcsv($handle, $headings, $delimiter, $enclosure);
+
+        foreach ($data as $record) {
+            // If the record is not an array, then break. This is because the 2nd param of
+            // fputcsv() should be an array
+            if (!is_array($record)) {
+                break;
+            }
+
+            // Suppressing the "array to string conversion" notice. Retain the "evil" @ here.
+            $record = @array_map('strval', $record);
+
+            // Returns the length of the string written or false
+            fputcsv($handle, $record, $delimiter, $enclosure);
+        }
+
+        // Reset the file pointer
+        rewind($handle);
+
+        // Retrieve the csv contents
+        $csv = stream_get_contents($handle);
+
+        fclose($handle);
+
+        return $csv;
+    }
 }
