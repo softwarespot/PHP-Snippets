@@ -252,7 +252,7 @@ class Utils
      * @param mixed $default Default value to use if not set
      * @return mixed If set, then the value of the variable; otherwise, the default value
      */
-    public static function isSet($value, $default)
+    public static function isSetVar($value, $default)
     {
         // PHP 7
         // return $value ?? $default;
