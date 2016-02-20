@@ -36,7 +36,7 @@ Utils::var_dump($_SERVER, '$_SERVER');
 /**
  * A set of static utility functions
  *
- * Note: All string functions support UTF-8 strings, unless Utils::characterSet is overridden with another charset
+ * Note: All string functions support UTF-8 strings, unless Utils::characterSet is overridden with another character set
  * Style: The coding style for this utility class is PSR-2
  */
 class Utils
@@ -151,7 +151,9 @@ class Utils
 
         if (is_array($value)) {
             // There is very little performance difference between using $key => $value and array_keys()
-            foreach (array_keys($value) as $key) {
+            $keys = array_keys($value);
+
+            foreach ($keys as $key) {
                 $value[$key] = html_escape($value[$key], $doubleEncode);
             }
 
@@ -316,9 +318,10 @@ class Utils
     public static function isSetVar($value, $default)
     {
         // PHP 7
-        // return $value ?? $default;
+        return $value ?? $default;
 
-        return isset($value) ? $value : $default;
+        // PHP 5.6
+        // return isset($value) ? $value : $default;
     }
 
     /**
@@ -382,6 +385,7 @@ class Utils
         // Cache the request body
         static $_input;
 
+        // Cache the request body if not done already
         if (!isset($_input)) {
             $_input = file_get_contents('php://input');
             if ($_input === false) {
@@ -393,15 +397,15 @@ class Utils
     }
 
     /**
-     * Get the $_GET request data
+     * Retrieve the $_GET request array with an optional key
      *
      * @access public
-     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_GET array
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_GET array
      * @return array|mixed Value of the key or a deep clone of the $_GET array; otherwise, null or an empty array on error
      */
-    public static function requestGET($index = null)
+    public static function requestGET($key = null)
     {
-        return static::_arrayFetchAll($_GET, $index);
+        return static::_arrayFetchAll($_GET, $key);
     }
 
     /**
@@ -433,39 +437,39 @@ class Utils
     }
 
     /**
-     * Get the $_POST request data
+     * Retrieve the $_POST request array with an optional key
      *
      * @access public
-     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_POST array
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_POST array
      * @return array|mixed Value of the key or a deep clone of the $_POST array; otherwise, null or an empty array on error
      */
-    public static function requestPOST($index = null)
+    public static function requestPOST($key = null)
     {
-        return static::_arrayFetchAll($_POST, $index);
+        return static::_arrayFetchAll($_POST, $key);
     }
 
     /**
-     * Get the $_REQUEST request data
+     * Retrieve the $_REQUEST request array with an optional key
      *
      * @access public
-     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_REQUEST array
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_REQUEST array
      * @return array|mixed Value of the key or a deep clone of the $_REQUEST array; otherwise, null or an empty array on error
      */
-    public static function requestREQUEST($index = null)
+    public static function requestREQUEST($key = null)
     {
-        return static::_arrayFetchAll($_REQUEST, $index);
+        return static::_arrayFetchAll($_REQUEST, $key);
     }
 
      /**
-     * Get the $_SERVER request data
+     * Retrieve the $_SERVER request array with an optional key
      *
      * @access public
-     * @param mixed $index Optional key to search for; otherwise, a deep clone of the $_SERVER array
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_SERVER array
      * @return array|mixed Value of the key or a deep clone of the $_SERVER array; otherwise, null or an empty array on error
      */
-    public static function requestSERVER($index = null)
+    public static function requestSERVER($key = null)
     {
-        return static::_arrayFetchAll($_SERVER, $index);
+        return static::_arrayFetchAll($_SERVER, $key);
     }
 
     /**
