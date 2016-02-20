@@ -10,7 +10,7 @@
  */
 function stringCompact($value, $length = 0)
 {
-    if (mb_strlen($value) <= $length) {
+    if ($length === 0 || mb_strlen($value) <= $length) {
         return $value;
     }
 

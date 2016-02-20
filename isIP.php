@@ -12,6 +12,7 @@
 function isIP($ip, $type = null)
 {
     $ip = strtolower($type);
+
     switch ($ip) {
         case 'ipv4':
             $type = FILTER_FLAG_IPV4;
