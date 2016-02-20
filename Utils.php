@@ -488,33 +488,46 @@ class Utils
     }
 
     /**
+     * Clean UTF-8 strings so it contains only valid characters as set
+     * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Utf8.php
+     *
+     * @access public
+     * @param string $str String to clean
+     * @return string Cleaned string
+     */
+    public static function strClean($str)
+    {
+        return mb_convert_encoding($str, static::$characterSet, static::$characterSet);
+    }
+
+    /**
      * Compact a string to a maximum length
      *
      * @access public
-     * @param string $value String to compact
+     * @param string $str String to compact
      * @param integer $length Length to trim at
      * @return string Compact string; otherwise, original string
      */
-    public static function strCompact($value, $length = 0)
+    public static function strCompact($str, $length = 0)
     {
         // mb_strwidth is better than using mb_strlen. See PHP docs for more details
-        if ($length === 0 || mb_strwidth($value) <= $length) {
-            return $value;
+        if ($length === 0 || mb_strwidth($str) <= $length) {
+            return $str;
         }
 
-        return mb_strimwidth($value, 0, $length, '...');
+        return mb_strimwidth($str, 0, $length, '...');
     }
 
     /**
      * Retrieve the length of a given string
      *
      * @access public
-     * @param string $value String to check
+     * @param string $str String to check
      * @return integer String value length
      */
-    public static function strLen($value)
+    public static function strLen($str)
     {
-        return mb_strlen($value);
+        return mb_strlen($str);
     }
 
     /**
@@ -522,52 +535,52 @@ class Utils
      * Idea by Laravel, URL: https://github.com/laravel/framework/blob/master/src/Illuminate/Support/Str.php
      *
      * @access public
-     * @param string $value Snake case string
+     * @param string $str Snake case string
      * @return string String as camel case
      */
-    public static function strToCamelCase($value)
+    public static function strToCamelCase($str)
     {
-        $value = str_replace(['-', '_'], ' ', $value);
-        $value = ucwords($value);
-        $value =  str_replace(' ', '', $value);
+        $str = str_replace(['-', '_'], ' ', $str);
+        $str = ucwords($str);
+        $str =  str_replace(' ', '', $str);
 
-        return lcfirst($value);
+        return lcfirst($str);
     }
 
     /**
      * Convert a string to lower-case
      *
      * @access public
-     * @param string $value String to change to lower-case
+     * @param string $str String to change to lower-case
      * @return string Lower-case string
      */
-    public static function strToLower($value)
+    public static function strToLower($str)
     {
-        return mb_strtolower($value, static::$characterSet);
+        return mb_strtolower($str, static::$characterSet);
     }
 
     /**
      * Convert a string to title-case
      *
      * @access public
-     * @param string $value String to change to title-case
+     * @param string $str String to change to title-case
      * @return string Title-case string
      */
-    public static function strToTitle($value)
+    public static function strToTitle($str)
     {
-        return mb_convert_case($value, MB_CASE_TITLE, static::$characterSet);
+        return mb_convert_case($str, MB_CASE_TITLE, static::$characterSet);
     }
 
     /**
      * Convert a string to upper-case
      *
      * @access public
-     * @param string $value String to change to upper-case
+     * @param string $str String to change to upper-case
      * @return string Upper-case string
      */
-    public static function strToUpper($value)
+    public static function strToUpper($str)
     {
-        return mb_strtoupper($value, static::$characterSet);
+        return mb_strtoupper($str, static::$characterSet);
     }
 
     /**
@@ -575,16 +588,16 @@ class Utils
      * Idea by Laravel, URL: https://github.com/laravel/framework/blob/master/src/Illuminate/Support/Str.php
      *
      * @access public
-     * @param string $value Camel case string
+     * @param string $str Camel case string
      * @param string $delimiter Delimiter to use. Default '_'
      * @return string String as snake case
      */
-    public static function strToSnakeCase($value, $delimiter = '_')
+    public static function strToSnakeCase($str, $delimiter = '_')
     {
         // Pre-append the delimiter before an upper-case character
-        $value = preg_replace('/(.)(?=[A-Z])/', '$1' . $delimiter, $value);
+        $str = preg_replace('/(.)(?=[A-Z])/', '$1' . $delimiter, $str);
 
-        return mb_strtolower($value);
+        return mb_strtolower($str);
     }
 
     /**
