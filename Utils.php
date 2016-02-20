@@ -289,17 +289,24 @@ class Utils
      *
      * @access public
      * @param string $url Url to redirect to
+     * @param boolean $permanant True to set the header to 'Moved Permanently'. Default is false
      * @param boolean $validate Validate the url being redirected to. Default is true
      * @return undefined
      */
-    public static function redirect($url, $validate = true)
+    public static function redirect($url, $permanant = false, $validate = true)
     {
         // Ensure $validate is always true by default if a boolean datatype isn't passed
         if ($validate !== false && !self::isURL($url)) {
             return;
         }
 
+        // Enforce the default value of false
+        if ($permanant === true) {
+            header('HTTP/1.1 301 Moved Permanently');
+        }
+
         header("Location: $url");
+        exit();
     }
 
     /**
