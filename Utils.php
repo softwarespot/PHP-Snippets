@@ -10,6 +10,10 @@ namespace Utils;
  */
 class Utils
 {
+    // Constants
+    const IP_ADDRESS_V4 = 'ipv4';
+    const IP_ADDRESS_V6 = 'ipv4';
+
     // Default charset
     protected static $defaultCharset = 'UTF-8';
 
@@ -26,6 +30,22 @@ class Utils
     {
         // Using array_key_exists() denotes if the key actually exists
         return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
+    }
+
+    /**
+     * Get the client's IP address
+     *
+     * @access public
+     * @return string Client's IP address; otherwise, null on error
+     */
+    public static function clientIPAddress()
+    {
+        // Maybe use this in the future: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
+        if (!empty($_SERVER['REMOTE_ADDR']) && Utils::isIPAddress($_SERVER['REMOTE_ADDR'])) {
+                return $_SERVER['REMOTE_ADDR'];
+        }
+
+        return null;
     }
 
     /**
@@ -176,25 +196,33 @@ class Utils
      *
      * @access public
      * @param string $ip IP address to validated
-     * @param string $type IP protocol: 'ipv4' or 'ipv6'
+     * @param string $type IP protocol: Utils::IP_ADDRESS_V4 ('ipv4') or Utils::IP_ADDRESS_V6 ('ipv6'). Default is Utils::IP_ADDRESS_V4
+     * @param boolean $exludePrivAndRes Exclude private and reserved ranges. Default it false
      * @return boolean True, is a valid IP address; otherwise, false
      */
-    public static function isIPAddress($ip, $type = null)
+    public static function isIPAddress($ip, $type = FILTER_FLAG_IPV4, $exludePrivAndRes = false)
     {
         $ip = strtolower($type);
 
         switch ($ip) {
-            case 'ipv4':
+            case self::IP_ADDRESS_V4:
                 $type = FILTER_FLAG_IPV4;
                 break;
 
-            case 'ipv6':
+            case self::IP_ADDRESS_V6:
                 $type = FILTER_FLAG_IPV6;
                 break;
 
             default:
-                $type = null;
+                $type = FILTER_FLAG_IPV4;
                 break;
+        }
+
+        // Ensure $exludePrivAndRes is false by default by explicitly checking the type and value
+        if ($exludePrivAndRes === true) {
+            // Bitwise OR
+            $type |= FILTER_FLAG_NO_PRIV_RANGE;
+            $type |= FILTER_FLAG_NO_RES_RANGE;
         }
 
         return (bool) filter_var($ip, FILTER_VALIDATE_IP, $type);
