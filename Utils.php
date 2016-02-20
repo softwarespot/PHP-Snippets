@@ -14,7 +14,8 @@ Utils::dump(Utils::isInteger(100), 'isInteger');
 Utils::dump(Utils::isPHP('5.6'), 'isPHP');
 Utils::dump(Utils::isUTF8($utf8String), 'isUTF8');
 Utils::dump(Utils::strCompact($utf8String, 40), 'strCompact');
-Utils::dump(Utils::strToUpper($utf8String, 40), 'strToUpper');
+Utils::dump(Utils::strToLower($utf8String), 'strToLower');
+Utils::dump(Utils::strToUpper($utf8String), 'strToUpper');
 Utils::dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
 // END: Example
 
@@ -84,7 +85,7 @@ class Utils
 
         // Add appropriate formatting
         $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; padding: 10px; margin: 10px 0; text-align: left;\">$label => $output</pre>";
+        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; padding: 10px; margin: 10px 0; text-align: left; white-space: pre-wrap;\">$label => $output</pre>";
 
         // Return the current buffer, maintaining the default value
         if ($echo === false) {
