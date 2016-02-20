@@ -14,6 +14,21 @@ class Utils
     protected static $defaultCharset = 'UTF-8';
 
     /**
+     * Get a value from an array based on a particular key
+     *
+     * @access public
+     * @param mixed $needle Key to search for
+     * @param array $haystack Array to search in
+     * @param mixed $default Default value if not found. Default is null
+     * @return mixed|null The value from the array; otherwise, $default on error
+     */
+    public static function arrayGet($needle, &$haystack, $default = null)
+    {
+        // Using array_key_exists() denotes if the key actually exists
+        return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
+    }
+
+    /**
      * Generate a globally unique identifier (GUID)
      *
      * @access public
@@ -110,6 +125,19 @@ class Utils
     }
 
     /**
+     * Check if a variable is a floating point value
+     *
+     * @access public
+     * @param mixed $value Value to check
+     * @return boolean True, the value is a floating point; otherwise, false
+     */
+    public static function isFloat($value) {
+        $reIsFloat = "/(?:^-?(?!0{2,})\\d+\\.\\d+$)/";
+
+        return (bool) preg_match($reIsFloat, (string) $value);
+    }
+
+    /**
      * Check if behind an encrypted connection
      * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Common.php
      *
@@ -127,6 +155,19 @@ class Utils
         }
 
         return false;
+    }
+
+    /**
+     * Check if a variable is an integer value
+     *
+     * @access public
+     * @param mixed $value Value to check
+     * @return boolean True, the value is an integer; otherwise, false
+     */
+    public static function isInteger($value) {
+        $reIsInteger = "/(?:^-?(?!0+)\\d+$)/";
+
+        return (bool) preg_match($reIsInteger, (string) $value);
     }
 
     /**

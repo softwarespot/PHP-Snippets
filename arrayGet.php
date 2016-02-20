@@ -9,7 +9,8 @@
  * @param mixed $default Default value if not found. Default is null
  * @return mixed|null The value from the array; otherwise, $default on error
  */
-function arrayGet($needle, &$haystack, $default = null)
+public static function arrayGet($needle, &$haystack, $default = null)
 {
+    // Using array_key_exists() denotes if the key actually exists
     return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
 }
