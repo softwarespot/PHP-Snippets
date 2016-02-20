@@ -2,6 +2,25 @@
 
 namespace Utils;
 
+// START: Example
+// Use the following namespace
+use Utils\Utils;
+
+$utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
+Utils::dump(Utils::clientIPAddress(), 'clientIPAddress');
+Utils::dump(Utils::guid(), 'guid');
+Utils::dump(Utils::isFloat(100), 'isFloat');
+Utils::dump(Utils::isInteger(100), 'isInteger');
+Utils::dump(Utils::isPHP('5.6'), 'isPHP');
+Utils::dump(Utils::isUTF8($utf8String), 'isUTF8');
+Utils::dump(Utils::strCompact($utf8String, 40), 'strCompact');
+Utils::dump(Utils::strToUpper($utf8String, 40), 'strToUpper');
+Utils::dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
+// END: Example
+
+// TODO:
+// Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
+
 /**
  * A set of static utility functions
  *
@@ -40,12 +59,51 @@ class Utils
      */
     public static function clientIPAddress()
     {
-        // Maybe use this in the future: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
-        if (!empty($_SERVER['REMOTE_ADDR']) && Utils::isIPAddress($_SERVER['REMOTE_ADDR'])) {
-                return $_SERVER['REMOTE_ADDR'];
+        // Maybe use this in the future, URL: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
+        // Or URL: https://github.com/paste/Utils/blob/master/src/Paste/Utils.php#L165
+
+        return Utils::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+    }
+
+        /**
+     * Dump variable data in a clear format
+     * Idea by Joost van Veen, URL: https://gist.github.com/accentinteractive/3838495
+     *
+     * @access public
+     * @param mixed $data Data to dump
+     * @param string $label Label to output next to the data. Default is 'dump'
+     * @param boolean $echo True to echo to the output or return as a buffer string
+     * @return string|undefined If $echo is true, then the data is output; otherwise, a buffer string is returned
+     */
+    public static function dump($data, $label = 'dump', $echo = true)
+    {
+        // Store dump data in a buffer
+        ob_start();
+        var_dump($data);
+        $output = ob_get_clean();
+
+        // Add appropriate formatting
+        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
+        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; padding: 10px; margin: 10px 0; text-align: left;\">$label => $output</pre>";
+
+        // Return the current buffer, maintaining the default value
+        if ($echo === false) {
+            return $output;
         }
 
-        return null;
+        echo $output;
+    }
+
+    /**
+     * Dump and die (aka exit)
+     *
+     * @access public
+     * @see dump() for more details
+     */
+    public static function dd($data, $label = 'dump', $echo = true)
+    {
+        dump($data, $label, $echo);
+        exit;
     }
 
     /**
@@ -91,12 +149,13 @@ class Utils
      */
     public static function htmlEscape($value, $doubleEncode = false)
     {
+        // Check if the value is falsy
         if (empty($value)) {
             return $value;
         }
 
         if (is_array($value)) {
-            // There is little performance difference between using $key => $value and array_keys()
+            // There is very little performance difference between using $key => $value and array_keys()
             foreach (array_keys($value) as $key) {
                 $value[$key] = html_escape($value[$key], $doubleEncode);
             }
@@ -108,7 +167,7 @@ class Utils
     }
 
     /**
-     * Check if the request was an ajax request
+     * Check if the request was via ajax
      *
      * @access public
      * @return boolean True, the request was an ajax request; otherwise, false
@@ -151,8 +210,9 @@ class Utils
      * @param mixed $value Value to check
      * @return boolean True, the value is a floating point; otherwise, false
      */
-    public static function isFloat($value) {
-        $reIsFloat = "/(?:^-?(?!0{2,})\\d+\\.\\d+$)/";
+    public static function isFloat($value)
+    {
+        $reIsFloat = '/(?:^-?(?!0{2,})\d+\.\d+$)/';
 
         return (bool) preg_match($reIsFloat, (string) $value);
     }
@@ -184,8 +244,9 @@ class Utils
      * @param mixed $value Value to check
      * @return boolean True, the value is an integer; otherwise, false
      */
-    public static function isInteger($value) {
-        $reIsInteger = "/(?:^-?(?!0+)\\d+$)/";
+    public static function isInteger($value)
+    {
+        $reIsInteger = '/(?:^-?(?!0+)\d+$)/';
 
         return (bool) preg_match($reIsInteger, (string) $value);
     }
@@ -202,6 +263,11 @@ class Utils
      */
     public static function isIPAddress($ip, $type = FILTER_FLAG_IPV4, $exludePrivAndRes = false)
     {
+        // Check if the value is falsy
+        if (empty($ip)) {
+            return false;
+        }
+
         $ip = strtolower($type);
 
         switch ($ip) {
@@ -220,7 +286,7 @@ class Utils
 
         // Ensure $exludePrivAndRes is false by default by explicitly checking the type and value
         if ($exludePrivAndRes === true) {
-            // Bitwise OR
+            // Use bitwise OR when excluding the private and reserved address ranges
             $type |= FILTER_FLAG_NO_PRIV_RANGE;
             $type |= FILTER_FLAG_NO_RES_RANGE;
         }
@@ -306,7 +372,7 @@ class Utils
         }
 
         header("Location: $url");
-        exit();
+        exit;
     }
 
     /**
@@ -318,9 +384,9 @@ class Utils
      */
     public static function requestBody()
     {
+        // Cache the request body
         static $_input;
 
-        // Cache the request body
         if (!isset($_input)) {
             $_input = file_get_contents('php://input');
             if ($_input === false) {
@@ -354,9 +420,9 @@ class Utils
      */
     public static function requestMethod($toUpperCase = true)
     {
-        $request = $_SERVER['REQUEST_METHOD'];
+        $method = $_SERVER['REQUEST_METHOD'];
 
-        return $toUpperCase === false ? strtolower($request) : strtoupper($request);
+        return $toUpperCase === false ? strtolower($method) : strtoupper($method);
     }
 
     /**
@@ -369,7 +435,7 @@ class Utils
      */
     public static function strCompact($value, $length = 0)
     {
-        // Better than using mb_strlen
+        // mb_strwidth is better than using mb_strlen. See PHP docs for more details
         if ($length === 0 || mb_strwidth($value) <= $length) {
             return $value;
         }
@@ -463,21 +529,27 @@ class Utils
      * Coerce a value to an array if not already an array
      *
      * @access public
-     * @param mixed $value Value to coerce
+     * @param mixed $value0...n Value(s) to coerce
      * @return array An new array with the zeroth element as the passed value; otherwise, the original array reference
      */
-    public static function toArray($value)
+    public static function toArray(/*$value1, $value2, $value3, $valuen*/)
     {
         if (is_array($value)) {
             return $value;
         }
 
-        return [$value];
+        $args = [];
+        foreach(func_get_args() as $arg) {
+            $args[] = $arg;
+        }
+
+        return $args;
     }
 
     /**
      * Convert an array to a comma separated value (CSV) string
      * Idea by metashock, URL: http://www.metashock.de/2014/02/create-csv-file-in-memory-php/
+     * TODO: Consider passing the headers as an additional argument
      *
      * @access public
      * @param mixed $data Data to convert
