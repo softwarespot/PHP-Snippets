@@ -17,15 +17,26 @@ Utils::dump(Utils::strCompact($utf8String, 40), 'strCompact');
 Utils::dump(Utils::strToLower($utf8String), 'strToLower');
 Utils::dump(Utils::strToUpper($utf8String), 'strToUpper');
 Utils::dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
+
+$class = new \stdClass;
+$class->foo = 100;
+$class->bar = 200;
+Utils::dump(Utils::toArray($class), 'toArray');
+
+Utils::dump($_GET, '$_GET');
+Utils::dump($_SERVER, '$_SERVER');
 // END: Example
 
 // TODO:
 // Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
+// Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Useful idea: URL: https://github.com/JBZoo/Utils
 
 /**
  * A set of static utility functions
  *
- * Note: All string functions support UTF-8 strings, unless Utils::defaultCharset is overridden with another charset
+ * Note: All string functions support UTF-8 strings, unless Utils::characterSet is overridden with another charset
  * Style: The coding style for this utility class is PSR-2
  */
 class Utils
@@ -35,7 +46,7 @@ class Utils
     const IP_ADDRESS_V6 = 'ipv4';
 
     // Default charset
-    protected static $defaultCharset = 'UTF-8';
+    protected static $characterSet = 'UTF-8';
 
     /**
      * Get a value from an array based on a particular key
@@ -63,10 +74,10 @@ class Utils
         // Maybe use this in the future, URL: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
         // Or URL: https://github.com/paste/Utils/blob/master/src/Paste/Utils.php#L165
 
-        return Utils::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return self::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
-        /**
+    /**
      * Dump variable data in a clear format
      * Idea by Joost van Veen, URL: https://gist.github.com/accentinteractive/3838495
      *
@@ -84,8 +95,9 @@ class Utils
         $output = ob_get_clean();
 
         // Add appropriate formatting
-        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; padding: 10px; margin: 10px 0; text-align: left; white-space: pre-wrap;\">$label => $output</pre>";
+        $reAddWS = '/\]\=\>\n(\s+)/m';
+        $output = preg_replace($reAddWS, '] => ', $output);
+        $output = "<pre style=\"background: #3498db; color: #000; border: 1px dotted #000; margin: 10px 0; padding: 10px; text-align: left; white-space: pre-wrap;\">$label => $output</pre>";
 
         // Return the current buffer, maintaining the default value
         if ($echo === false) {
@@ -101,9 +113,9 @@ class Utils
      * @access public
      * @see dump() for more details
      */
-    public static function dd($data, $label = 'dump', $echo = true)
+    public static function dd($data, $label = 'dump')
     {
-        dump($data, $label, $echo);
+        echo self::dump($data, $label, false);
         exit;
     }
 
@@ -164,7 +176,7 @@ class Utils
             return $value;
         }
 
-        return htmlspecialchars($value, ENT_QUOTES, self::$defaultCharset, $doubleEncode);
+        return htmlspecialchars($value, ENT_QUOTES, self::$characterSet, $doubleEncode);
     }
 
     /**
@@ -348,7 +360,7 @@ class Utils
      */
     public static function isUTF8($value)
     {
-        return mb_check_encoding($value, self::$defaultCharset);
+        return mb_check_encoding($value, self::$characterSet);
     }
 
     /**
@@ -482,7 +494,7 @@ class Utils
      */
     public static function strToLower($value)
     {
-        return mb_strtolower($value, self::$defaultCharset);
+        return mb_strtolower($value, self::$characterSet);
     }
 
     /**
@@ -494,7 +506,7 @@ class Utils
      */
     public static function strToTitle($value)
     {
-        return mb_convert_case($value, MB_CASE_TITLE, self::$defaultCharset);
+        return mb_convert_case($value, MB_CASE_TITLE, self::$characterSet);
     }
 
     /**
@@ -506,7 +518,7 @@ class Utils
      */
     public static function strToUpper($value)
     {
-        return mb_strtoupper($value, self::$defaultCharset);
+        return mb_strtoupper($value, self::$characterSet);
     }
 
     /**
@@ -533,10 +545,14 @@ class Utils
      * @param mixed $value0...n Value(s) to coerce
      * @return array An new array with the zeroth element as the passed value; otherwise, the original array reference
      */
-    public static function toArray(/*$value1, $value2, $value3, $valuen*/)
+    public static function toArray($value1 /*, $value2, $value3, $valuen*/)
     {
         if (is_array($value)) {
             return $value;
+        }
+
+        if (is_object($value)) {
+            return (array) $value;
         }
 
         $args = [];
