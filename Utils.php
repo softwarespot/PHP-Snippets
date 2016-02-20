@@ -33,12 +33,13 @@ Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQ
 // Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
 // Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
 // Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Add: mb_internal_encoding usage
 // Useful idea: URL: https://github.com/JBZoo/Utils
 
 /**
  * A set of static utility functions
  *
- * Note: All string functions support UTF-8 strings, unless Utils::characterSet is overridden with another character set
+ * Note: All string functions support UTF-8 strings, unless Utils::encoding is overridden with another character set
  * Style: The coding style for this utility class is PSR-2
  */
 class Utils
@@ -47,8 +48,11 @@ class Utils
     const IP_ADDRESS_V4 = 'ipv4';
     const IP_ADDRESS_V6 = 'ipv4';
 
-    // Default charset
-    protected static $characterSet = 'UTF-8';
+    /**
+     * Default character encoding for mb_* functions
+     * @var string
+     */
+    protected static $encoding = 'UTF-8';
 
     /**
      * Get a value from an array based on a particular key
@@ -162,7 +166,7 @@ class Utils
             return $value;
         }
 
-        return htmlspecialchars($value, ENT_QUOTES, static::$characterSet, $doubleEncode);
+        return htmlspecialchars($value, ENT_QUOTES, static::$encoding, $doubleEncode);
     }
 
     /**
@@ -347,7 +351,7 @@ class Utils
      */
     public static function isUTF8($value)
     {
-        return mb_check_encoding($value, static::$characterSet);
+        return mb_check_encoding($value, static::$encoding);
     }
 
     /**
@@ -503,7 +507,7 @@ class Utils
      */
     public static function strClean($str)
     {
-        return mb_convert_encoding($str, static::$characterSet, static::$characterSet);
+        return mb_convert_encoding($str, static::$encoding, static::$encoding);
     }
 
     /**
@@ -562,7 +566,7 @@ class Utils
      */
     public static function strToLower($str)
     {
-        return mb_strtolower($str, static::$characterSet);
+        return mb_strtolower($str, static::$encoding);
     }
 
     /**
@@ -574,7 +578,7 @@ class Utils
      */
     public static function strToTitle($str)
     {
-        return mb_convert_case($str, MB_CASE_TITLE, static::$characterSet);
+        return mb_convert_case($str, MB_CASE_TITLE, static::$encoding);
     }
 
     /**
@@ -586,7 +590,7 @@ class Utils
      */
     public static function strToUpper($str)
     {
-        return mb_strtoupper($str, static::$characterSet);
+        return mb_strtoupper($str, static::$encoding);
     }
 
     /**
