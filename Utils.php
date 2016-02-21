@@ -431,7 +431,7 @@ class Utils
         $url = (string) $url;
 
         $queryString = parse_url($url, PHP_URL_QUERY);
-        self::_strParse($queryString, $queryParams, null);
+        self::_strParse($queryString, $queryParams);
 
         return $queryParams;
     }
@@ -912,11 +912,12 @@ class Utils
 
     /**
      * Basic wrapper for parse_str which returns a default value on error. See parse_str docs for more details
+     *
      * @access private
+     * @param mixed $default Default value if not found. Default is null
      */
-    private static function _strParse($str, &$array, $default)
+    private static function _strParse($str, &$array, $default = null)
     {
-
         parse_str($str, $array);
 
         // Set to the default value if an error occurred
