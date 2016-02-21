@@ -100,14 +100,14 @@ class Utils
      */
     public static function autoloader(array $paths)
     {
+        $extension = '.php';
+
         // Create an anonymous function referencing the outer variables
-        spl_autoload_register(function ($class) use ($paths) {
+        spl_autoload_register(function ($class) use ($paths, $extension) {
             // Check if the class has already been loaded
             if (class_exists($class, false)) {
                 return;
             }
-
-            $extension = '.php';
 
             foreach ($paths as $path) {
                 // Sanitize the filepath
