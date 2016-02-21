@@ -75,7 +75,7 @@ class Utils
     protected static $supportedContentTypes = [
         'json' => 'application/json',
         'jsonp' => 'application/javascript',
-        'text' => 'text/plain'
+        'text' => 'text/plain',
     ];
 
     /**
@@ -200,7 +200,7 @@ class Utils
             mt_rand(32768, 49151),
             mt_rand(0, 65535),
             mt_rand(0, 65535),
-            mt_rand(0, 65535)
+            mt_rand(0, 65535),
         );
     }
 
