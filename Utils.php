@@ -465,7 +465,7 @@ class Utils
      * @param boolean $validate Validate the url being redirected to. Default is true
      * @return undefined
      */
-    public static function redirect($url, $permanant = false, $validate = true)
+    public static function redirect($url, $permanent = false, $validate = true)
     {
         // Check the default value is boolean
         is_bool($validate) || $validate = true;
@@ -476,7 +476,7 @@ class Utils
         }
 
         // Enforce the default value of false
-        if ($permanant === true) {
+        if ($permanent === true) {
             header('HTTP/1.1 301 Moved Permanently');
         }
 
