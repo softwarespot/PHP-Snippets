@@ -7,10 +7,13 @@ namespace Utils;
 use Utils\Utils;
 
 $utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
+
 Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
+Utils::var_dump(Utils::contentType(), 'contentType');
 Utils::var_dump(Utils::guid(), 'guid');
 Utils::var_dump(Utils::isAjaxRequest() ? 'AJAX request' : 'Not an AJAX request', 'isAjaxRequest');
-Utils::var_dump(Utils::isFloat(100), 'isFloat');
+Utils::var_dump(Utils::isFloat(100.99), 'isFloat');
+Utils::var_dump(Utils::isFloat(100), 'isFloat :: Error');
 Utils::var_dump(Utils::isInteger(100), 'isInteger');
 Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
 Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
@@ -22,10 +25,10 @@ Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
 Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
 
 // Cast an object to an array
-$class = new \stdClass;
-$class->foo = 100;
-$class->bar = 200;
-Utils::var_dump(Utils::toArray($class), 'toArray');
+$obj = new \stdClass;
+$obj->foo = 'foo';
+$obj->bar = 'bar';
+Utils::var_dump(Utils::toArray($obj), 'toArray');
 
 // Dump all globals
 Utils::var_dump(Utils::requestDELETE(), 'requestDELETE');
@@ -67,7 +70,7 @@ class Utils
      * List of supported formats aka content types
      * @var array
      */
-    protected static $contentTypes = [
+    protected static $supportedContentTypes = [
         'json' => 'application/json',
         'jsonp' => 'application/javascript',
         'text' => 'text/plain'
@@ -89,6 +92,37 @@ class Utils
     }
 
     /**
+     * Create an autoloader for when an unloaded class is instantiated
+     *
+     * @access public
+     * @param  array $paths Paths to search within
+     * @return undefined
+     */
+    public static function autoloader(array $paths)
+    {
+        // Create an anonymous function referencing the outer variables
+        spl_autoload_register(function ($class) use ($paths) {
+            // Check if the class has already been loaded
+            if (class_exists($class, false)) {
+                return;
+            }
+
+            $extension = '.php';
+
+            foreach ($paths as $path) {
+                // Sanitize the filepath
+                $filePath = realpath($path . '/' . $class . $extension);
+
+                if (is_file($filePath)) {
+                    // Require will produce an E_COMPILE_ERROR if the file doesn't exist, whereas include will throw a warning
+                    require_once($filePath);
+                    break;
+                }
+            }
+        });
+    }
+
+    /**
      * Get the client's IP address
      *
      * @access public
@@ -99,18 +133,27 @@ class Utils
         // Maybe use this in the future, URL: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
         // Or URL: https://github.com/paste/Utils/blob/master/src/Paste/Utils.php#L165
 
-        return static::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return self::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
     /**
-     * Get the content type
+     * Get the supported content type
      *
      * @access public
      * @return string|null Content type string; otherwise, null on error
      */
     public static function contentType()
     {
-        return static::_arrayFetchAll('CONTENT_TYPE', $_SERVER);
+        $contentType = self::_arrayFetchAll('CONTENT_TYPE', $_SERVER);
+
+        // If separated by semi-colons, then get the first part of the content type string
+        if (strpos($contentType, ';')) {
+            $contentType = current(explode(';', $contentType));
+        }
+
+        $found = (bool) array_search($contentType, self::$supportedContentTypes);
+
+        return $found ? $contentType : null;
     }
 
     /**
@@ -121,7 +164,7 @@ class Utils
      */
     public static function dd($data, $label = 'dump')
     {
-        echo static::var_dump($data, $label, false);
+        echo self::var_dump($data, $label, false);
         exit;
     }
 
@@ -184,7 +227,7 @@ class Utils
             return $value;
         }
 
-        return htmlspecialchars($value, ENT_QUOTES, static::$encoding, $doubleEncode);
+        return htmlspecialchars($value, ENT_QUOTES, self::$encoding, $doubleEncode);
     }
 
     /**
@@ -195,7 +238,7 @@ class Utils
      */
     public static function isAjaxRequest()
     {
-        $request = static::_arrayFetchAll('HTTP_X_REQUESTED_WITH', $_SERVER);
+        $request = self::_arrayFetchAll('HTTP_X_REQUESTED_WITH', $_SERVER);
 
         return !empty($request) && strtolower($request) === 'xmlhttprequest';
     }
@@ -292,11 +335,11 @@ class Utils
         $ip = strtolower($type);
 
         switch ($ip) {
-            case static::IP_ADDRESS_V4:
+            case self::IP_ADDRESS_V4:
                 $type = FILTER_FLAG_IPV4;
                 break;
 
-            case static::IP_ADDRESS_V6:
+            case self::IP_ADDRESS_V6:
                 $type = FILTER_FLAG_IPV6;
                 break;
 
@@ -369,7 +412,7 @@ class Utils
      */
     public static function isUTF8($value)
     {
-        return mb_check_encoding($value, static::$encoding);
+        return mb_check_encoding($value, self::$encoding);
     }
 
     /**
@@ -386,7 +429,7 @@ class Utils
         $url = (string) $url;
 
         $queryString = parse_url($url, PHP_URL_QUERY);
-        static::_strParse($queryString, $queryParams, null);
+        self::_strParse($queryString, $queryParams, null);
 
         return $queryParams;
     }
@@ -403,7 +446,7 @@ class Utils
     public static function redirect($url, $permanant = false, $validate = true)
     {
         // Ensure $validate is always true by default if a boolean datatype isn't passed
-        if ($validate !== false && !static::isURL($url)) {
+        if ($validate !== false && !self::isURL($url)) {
             return;
         }
 
@@ -449,12 +492,13 @@ class Utils
      */
     public static function requestDELETE($key = null)
     {
+        // Cache the $_DELETE 'global'
         static $_DELETE;
         if (!isset($_DELETE)) {
-            static::_strParse(static::requestBody(), $_DELETE, []);
+            self::_strParse(self::requestBody(), $_DELETE, []);
         }
 
-        return static::_arrayFetchAll($key, $_DELETE);
+        return self::_arrayFetchAll($key, $_DELETE);
     }
 
     /**
@@ -466,7 +510,7 @@ class Utils
      */
     public static function requestGET($key = null)
     {
-        return static::_arrayFetchAll($key, $_GET);
+        return self::_arrayFetchAll($key, $_GET);
     }
 
     /**
@@ -478,12 +522,13 @@ class Utils
      */
     public static function requestHEAD($key = null)
     {
+        // Cache the $_HEAD 'global'
         static $_HEAD;
         if (!isset($_HEAD)) {
-            static::_strParse(static::requestSERVER('QUERY_STRING'), $_HEAD, []);
+            self::_strParse(self::requestSERVER('QUERY_STRING'), $_HEAD, []);
         }
 
-        return static::_arrayFetchAll($key, $_HEAD);
+        return self::_arrayFetchAll($key, $_HEAD);
     }
 
     /**
@@ -495,7 +540,7 @@ class Utils
      */
     public static function requestJSON($default = null)
     {
-        $contents = static::requestBody();
+        $contents = self::requestBody();
 
         return $contents === null ? $default : json_decode($contents);
     }
@@ -509,7 +554,7 @@ class Utils
      */
     public static function requestMethod($toUpperCase = true)
     {
-        $method = static::_arrayFetchAll('REQUEST_METHOD', $_SERVER);
+        $method = self::_arrayFetchAll('REQUEST_METHOD', $_SERVER);
 
         return $toUpperCase === false ? strtolower($method) : strtoupper($method);
     }
@@ -523,12 +568,13 @@ class Utils
      */
     public static function requestPATCH($key = null)
     {
+        // Cache the $_PATCH 'global'
         static $_PATCH;
         if (!isset($_PATCH)) {
-            static::_strParse(static::requestBody(), $_PATCH, []);
+            self::_strParse(self::requestBody(), $_PATCH, []);
         }
 
-        return static::_arrayFetchAll($key, $_PATCH);
+        return self::_arrayFetchAll($key, $_PATCH);
     }
 
     /**
@@ -540,7 +586,7 @@ class Utils
      */
     public static function requestPOST($key = null)
     {
-        return static::_arrayFetchAll($key, $_POST);
+        return self::_arrayFetchAll($key, $_POST);
     }
 
     /**
@@ -552,12 +598,13 @@ class Utils
      */
     public static function requestPUT($key = null)
     {
+        // Cache the $_PUT 'global'
         static $_PUT;
         if (!isset($_PUT)) {
-            static::_strParse(static::requestBody(), $_PUT, []);
+            self::_strParse(self::requestBody(), $_PUT, []);
         }
 
-        return static::_arrayFetchAll($key, $_PUT);
+        return self::_arrayFetchAll($key, $_PUT);
     }
 
     /**
@@ -569,7 +616,7 @@ class Utils
      */
     public static function requestREQUEST($key = null)
     {
-        return static::_arrayFetchAll($key, $_REQUEST);
+        return self::_arrayFetchAll($key, $_REQUEST);
     }
 
     /**
@@ -581,7 +628,7 @@ class Utils
      */
     public static function requestSERVER($key = null)
     {
-        return static::_arrayFetchAll($key, $_SERVER);
+        return self::_arrayFetchAll($key, $_SERVER);
     }
 
     /**
@@ -594,7 +641,7 @@ class Utils
      */
     public static function strClean($str)
     {
-        return mb_convert_encoding($str, static::$encoding, static::$encoding);
+        return mb_convert_encoding($str, self::$encoding, self::$encoding);
     }
 
     /**
@@ -653,7 +700,7 @@ class Utils
      */
     public static function strToLower($str)
     {
-        return mb_strtolower($str, static::$encoding);
+        return mb_strtolower($str, self::$encoding);
     }
 
     /**
@@ -665,7 +712,7 @@ class Utils
      */
     public static function strToTitle($str)
     {
-        return mb_convert_case($str, MB_CASE_TITLE, static::$encoding);
+        return mb_convert_case($str, MB_CASE_TITLE, self::$encoding);
     }
 
     /**
@@ -677,7 +724,7 @@ class Utils
      */
     public static function strToUpper($str)
     {
-        return mb_strtoupper($str, static::$encoding);
+        return mb_strtoupper($str, self::$encoding);
     }
 
     /**
@@ -848,7 +895,7 @@ class Utils
             $array = [];
 
             foreach ($needle as $key) {
-                $array[$key] = static::_arrayFetchAll($key, $haystack);
+                $array[$key] = self::_arrayFetchAll($key, $haystack);
             }
 
             return $array;
