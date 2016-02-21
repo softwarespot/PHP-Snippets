@@ -200,7 +200,7 @@ class Utils
             mt_rand(32768, 49151),
             mt_rand(0, 65535),
             mt_rand(0, 65535),
-            mt_rand(0, 65535),
+            mt_rand(0, 65535)
         );
     }
 
@@ -835,6 +835,8 @@ class Utils
         if (!is_array($data)) {
             $data = (array) $data;
         }
+
+        $headings = null;
 
         // Check if it's a multi-dimensional array
         if (isset($data[0]) && count($data) !== count($data, COUNT_RECURSIVE)) {
