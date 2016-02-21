@@ -322,7 +322,7 @@ class Utils
     }
 
     /**
-     * Check if an image url is valid image url e.g. ends with .gif or .jpg
+     * Check if an image url is a valid image url e.g. ends with .gif or .jpg
      *
      * @access public
      * @param string $image Image url to check
