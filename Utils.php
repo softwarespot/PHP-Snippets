@@ -41,15 +41,15 @@ namespace App;
     Utils::var_dump(Utils::requestREQUEST(), 'requestREQUEST');
     Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
     // END: Example
-
-    // TODO:
-    // Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
-    // Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-    // Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-    // Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
-    // Add: mb_internal_encoding usage
-    // Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils
 */
+
+// TODO:
+// Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
+// Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
+// Add: mb_internal_encoding usage
+// Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils
 
 /**
  * A set of static utility functions
