@@ -330,7 +330,7 @@ class Utils
      */
     public static function isImage($image)
     {
-        $reIsImage = '/(?:\.(?:gif|jpe?g|png|webp|svg)$)/';
+        $reIsImage = '/(?:\.(?:gif|jpe?g|png|webp|svg)$)/i';
         $image = parse_url((string) $image, PHP_URL_PATH);
 
         return (bool) preg_match($reIsImage, $image);
