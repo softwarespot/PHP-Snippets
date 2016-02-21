@@ -407,10 +407,10 @@ class Utils
     public static function isSetVar($value, $default)
     {
         // PHP 7
-        return $value ?? $default;
+        // return $value ?? $default;
 
         // PHP 5
-        // return isset($value) ? $value : $default;
+        return isset($value) ? $value : $default;
     }
 
     /**
