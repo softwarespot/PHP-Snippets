@@ -9,24 +9,33 @@ use Utils\Utils;
 $utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
 Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
 Utils::var_dump(Utils::guid(), 'guid');
+Utils::var_dump(Utils::isAjaxRequest() ? 'AJAX request' : 'Not an AJAX request', 'isAjaxRequest');
 Utils::var_dump(Utils::isFloat(100), 'isFloat');
 Utils::var_dump(Utils::isInteger(100), 'isInteger');
 Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
 Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
+Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
+Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
 Utils::var_dump(Utils::strCompact($utf8String, 40), 'strCompact');
 Utils::var_dump(Utils::strToLower($utf8String), 'strToLower');
 Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
 Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
 
+// Cast an object to an array
 $class = new \stdClass;
 $class->foo = 100;
 $class->bar = 200;
 Utils::var_dump(Utils::toArray($class), 'toArray');
 
-Utils::var_dump($_GET, '$_GET');
-Utils::var_dump($_SERVER, '$_SERVER');
-Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
-Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
+// Dump all globals
+Utils::var_dump(Utils::requestDELETE(), 'requestDELETE');
+Utils::var_dump(Utils::requestGET(), 'requestGET');
+Utils::var_dump(Utils::requestHEAD(), 'requestHEAD');
+Utils::var_dump(Utils::requestPATCH(), 'requestPATCH');
+Utils::var_dump(Utils::requestPOST(), 'requestPOST');
+Utils::var_dump(Utils::requestPUT(), 'requestPUT');
+Utils::var_dump(Utils::requestREQUEST(), 'requestREQUEST');
+Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
 // END: Example
 
 // TODO:
@@ -53,6 +62,16 @@ class Utils
      * @var string
      */
     protected static $encoding = 'UTF-8';
+
+    /**
+     * List of supported formats aka content types
+     * @var array
+     */
+    protected static $contentTypes = [
+        'json' => 'application/json',
+        'jsonp' => 'application/javascript',
+        'text' => 'text/plain'
+    ];
 
     /**
      * Get a value from an array based on a particular key
@@ -86,13 +105,12 @@ class Utils
     /**
      * Get the content type
      *
+     * @access public
      * @return string|null Content type string; otherwise, null on error
      */
     public static function contentType()
     {
-        $contentType = $_SERVER['CONTENT_TYPE'];
-
-        return empty($contentType) ? null : $contentType;
+        return static::_arrayFetchAll('CONTENT_TYPE', $_SERVER);
     }
 
     /**
@@ -177,7 +195,7 @@ class Utils
      */
     public static function isAjaxRequest()
     {
-        $request = $_SERVER['HTTP_X_REQUESTED_WITH'];
+        $request = static::_arrayFetchAll('HTTP_X_REQUESTED_WITH', $_SERVER);
 
         return !empty($request) && strtolower($request) === 'xmlhttprequest';
     }
@@ -326,7 +344,7 @@ class Utils
         // PHP 7
         return $value ?? $default;
 
-        // PHP 5.6
+        // PHP 5
         // return isset($value) ? $value : $default;
     }
 
@@ -358,19 +376,19 @@ class Utils
      * Parse query parameters in a url string as an array
      * Note: This is a wrapper for parse_str, because of ... URL: http://phpsadness.com/sad/27
      *
+     * @access public
      * @param string $url URL string to parse
      * @return array|null Parsed query parameters as an associative array; otherwise, null on error
      */
     public static function parseQueryParams($url)
     {
-        if (empty($url)) {
-            return null;
-        }
+        // Cast as a string
+        $url = (string) $url;
 
         $queryString = parse_url($url, PHP_URL_QUERY);
-        parse_str($queryString, $queryParams);
+        static::_strParse($queryString, $queryParams, null);
 
-        return empty($queryParams) ? null : $queryParams;
+        return $queryParams;
     }
 
     /**
@@ -414,6 +432,7 @@ class Utils
         if (!isset($_input)) {
             $_input = file_get_contents('php://input');
             if ($_input === false) {
+                // Set to null instead of using the default false
                 $_input = null;
             }
         }
@@ -422,19 +441,53 @@ class Utils
     }
 
     /**
-     * Retrieve the $_GET request array with an optional key
+     * Retrieve the DELETE request array with an optional key to retrieve a single value
      *
      * @access public
-     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_GET array
-     * @return array|mixed Value of the key or a deep clone of the $_GET array; otherwise, null or an empty array on error
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the DELETE array
+     * @return array|mixed Value of the key or a deep clone of the DELETE array; otherwise, null or an empty array on error
      */
-    public static function requestGET($key = null)
+    public static function requestDELETE($key = null)
     {
-        return static::_arrayFetchAll($_GET, $key);
+        static $_DELETE;
+        if (!isset($_DELETE)) {
+            static::_strParse(static::requestBody(), $_DELETE, []);
+        }
+
+        return static::_arrayFetchAll($key, $_DELETE);
     }
 
     /**
-     * Get the request body as a JSON object
+     * Retrieve the GET request array with an optional key to retrieve a single value
+     *
+     * @access public
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the GET array
+     * @return array|mixed Value of the key or a deep clone of the GET array; otherwise, null or an empty array on error
+     */
+    public static function requestGET($key = null)
+    {
+        return static::_arrayFetchAll($key, $_GET);
+    }
+
+    /**
+     * Retrieve the HEAD request array with an optional key to retrieve a single value
+     *
+     * @access public
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_HEAD array
+     * @return array|mixed Value of the key or a deep clone of the $_HEAD array; otherwise, null or an empty array on error
+     */
+    public static function requestHEAD($key = null)
+    {
+        static $_HEAD;
+        if (!isset($_HEAD)) {
+            static::_strParse(static::requestSERVER('QUERY_STRING'), $_HEAD, []);
+        }
+
+        return static::_arrayFetchAll($key, $_HEAD);
+    }
+
+    /**
+     * Retrieve the request body as a JSON object
      *
      * @access public
      * @param mixed $default Default value to return if an error occurs. Default is null
@@ -444,7 +497,7 @@ class Utils
     {
         $contents = static::requestBody();
 
-        return $contents === false ? $default : json_decode($contents);
+        return $contents === null ? $default : json_decode($contents);
     }
 
     /**
@@ -456,37 +509,71 @@ class Utils
      */
     public static function requestMethod($toUpperCase = true)
     {
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = static::_arrayFetchAll('REQUEST_METHOD', $_SERVER);
 
         return $toUpperCase === false ? strtolower($method) : strtoupper($method);
     }
 
     /**
-     * Retrieve the $_POST request array with an optional key
+     * Retrieve the PATCH request array with an optional key to retrieve a single value
      *
      * @access public
-     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_POST array
-     * @return array|mixed Value of the key or a deep clone of the $_POST array; otherwise, null or an empty array on error
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the PATCH array
+     * @return array|mixed Value of the key or a deep clone of the PATCH array; otherwise, null or an empty array on error
      */
-    public static function requestPOST($key = null)
+    public static function requestPATCH($key = null)
     {
-        return static::_arrayFetchAll($_POST, $key);
+        static $_PATCH;
+        if (!isset($_PATCH)) {
+            static::_strParse(static::requestBody(), $_PATCH, []);
+        }
+
+        return static::_arrayFetchAll($key, $_PATCH);
     }
 
     /**
-     * Retrieve the $_REQUEST request array with an optional key
+     * Retrieve the POST request array with an optional key to retrieve a single value
      *
      * @access public
-     * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_REQUEST array
-     * @return array|mixed Value of the key or a deep clone of the $_REQUEST array; otherwise, null or an empty array on error
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the POST array
+     * @return array|mixed Value of the key or a deep clone of the POST array; otherwise, null or an empty array on error
+     */
+    public static function requestPOST($key = null)
+    {
+        return static::_arrayFetchAll($key, $_POST);
+    }
+
+    /**
+     * Retrieve the PUT request array with an optional key to retrieve a single value
+     *
+     * @access public
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the PUT array
+     * @return array|mixed Value of the key or a deep clone of the PUT array; otherwise, null or an empty array on error
+     */
+    public static function requestPUT($key = null)
+    {
+        static $_PUT;
+        if (!isset($_PUT)) {
+            static::_strParse(static::requestBody(), $_PUT, []);
+        }
+
+        return static::_arrayFetchAll($key, $_PUT);
+    }
+
+    /**
+     * Retrieve the REQUEST array with an optional key to retrieve a single value
+     *
+     * @access public
+     * @param mixed $key Optional key to search for; otherwise, a deep clone of the REQUEST array
+     * @return array|mixed Value of the key or a deep clone of the REQUEST array; otherwise, null or an empty array on error
      */
     public static function requestREQUEST($key = null)
     {
-        return static::_arrayFetchAll($_REQUEST, $key);
+        return static::_arrayFetchAll($key, $_REQUEST);
     }
 
-     /**
-     * Retrieve the $_SERVER request array with an optional key
+    /**
+     * Retrieve the $_SERVER request array with an optional key to retrieve a single value
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_SERVER array
@@ -494,7 +581,7 @@ class Utils
      */
     public static function requestSERVER($key = null)
     {
-        return static::_arrayFetchAll($_SERVER, $key);
+        return static::_arrayFetchAll($key, $_SERVER);
     }
 
     /**
@@ -623,16 +710,19 @@ class Utils
             return $value;
         }
 
+        // Cast an object as an array
         if (is_object($value)) {
             return (array) $value;
         }
 
-        $args = [];
-        foreach (func_get_args() as $arg) {
-            $args[] = $arg;
+        $array = [];
+
+        $args = func_get_args();
+        foreach ($args as $arg) {
+            $array[] = $arg;
         }
 
-        return $args;
+        return $array;
     }
 
     /**
@@ -740,12 +830,13 @@ class Utils
     /**
      * Get a value from an array based on a particular key or a deep cloned array
      *
-     * @access public
-     * @param array $haystack Array to search within
+     * @access private
      * @param mixed|null $needle Optional key to search for. If left null/undefined, then the entire array is deep cloned
+     * @param array $haystack Array to search within
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Either a deep cloned array or the value of the key; otherwise an empty array or null on error
      */
-    private static function _arrayFetchAll(array &$haystack, $needle = null)
+    private static function _arrayFetchAll($needle, &$haystack, $default = null)
     {
         // If null/undefined, then assume the array should be deep cloned
         if (!isset($needle)) {
@@ -757,7 +848,7 @@ class Utils
             $array = [];
 
             foreach ($needle as $key) {
-                $array[$key] = static::_arrayFetchAll($haystack, $key);
+                $array[$key] = static::_arrayFetchAll($key, $haystack);
             }
 
             return $array;
@@ -767,6 +858,21 @@ class Utils
             return $haystack[$needle];
         }
 
-        return null;
+        return $default;
+    }
+
+    /**
+     * Basic wrapper for parse_str which returns a default value on error. See parse_str docs for more details
+     * @access private
+     */
+    private static function _strParse($str, &$array, $default)
+    {
+
+        parse_str($str, $array);
+
+        // Set to the default value if an error occurred
+        if ( ! is_array($array)) {
+            $array = $default;
+        }
     }
 }
