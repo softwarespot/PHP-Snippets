@@ -921,7 +921,7 @@ class Utils
         parse_str($str, $array);
 
         // Set to the default value if an error occurred
-        if ( ! is_array($array)) {
+        if (!is_array($array)) {
             $array = $default;
         }
     }
