@@ -1,54 +1,55 @@
 <?php
 
-namespace Utils;
+namespace App;
 
-// START: Example
-// Use the following namespace
-use Utils\Utils;
+/*
+    // START: Example
+    // Use the following namespace
+    use App\Utils;
 
-$utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
+    $utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
 
-Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
-Utils::var_dump(Utils::contentType(), 'contentType');
-Utils::var_dump(Utils::guid(), 'guid');
-Utils::var_dump(Utils::isAjaxRequest() ? 'AJAX request' : 'Not an AJAX request', 'isAjaxRequest');
-Utils::var_dump(Utils::isFloat(100.99), 'isFloat');
-Utils::var_dump(Utils::isFloat(100), 'isFloat :: Error');
-Utils::var_dump(Utils::isInteger(100), 'isInteger');
-Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
-Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
-Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
-Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
-Utils::var_dump(Utils::strCompact($utf8String, 40), 'strCompact');
-Utils::var_dump(Utils::strToLower($utf8String), 'strToLower');
-Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
-Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
+    Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
+    Utils::var_dump(Utils::contentType(), 'contentType');
+    Utils::var_dump(Utils::guid(), 'guid');
+    Utils::var_dump(Utils::isAjaxRequest() ? 'AJAX request' : 'Not an AJAX request', 'isAjaxRequest');
+    Utils::var_dump(Utils::isFloat(100.99), 'isFloat');
+    Utils::var_dump(Utils::isFloat(100), 'isFloat :: Error');
+    Utils::var_dump(Utils::isInteger(100), 'isInteger');
+    Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
+    Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
+    Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
+    Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
+    Utils::var_dump(Utils::strCompact($utf8String, 40), 'strCompact');
+    Utils::var_dump(Utils::strToLower($utf8String), 'strToLower');
+    Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
+    Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
 
-// Cast an object to an array
-$obj = new \stdClass;
-$obj->foo = 'foo';
-$obj->bar = 'bar';
-Utils::var_dump(Utils::toArray($obj), 'toArray');
+    // Cast an object to an array
+    $obj = new \stdClass;
+    $obj->foo = 'foo';
+    $obj->bar = 'bar';
+    Utils::var_dump(Utils::toArray($obj), 'toArray');
 
-// Dump all globals
-Utils::var_dump(Utils::requestDELETE(), 'requestDELETE');
-Utils::var_dump(Utils::requestGET(), 'requestGET');
-Utils::var_dump(Utils::requestHEAD(), 'requestHEAD');
-Utils::var_dump(Utils::requestPATCH(), 'requestPATCH');
-Utils::var_dump(Utils::requestPOST(), 'requestPOST');
-Utils::var_dump(Utils::requestPUT(), 'requestPUT');
-Utils::var_dump(Utils::requestREQUEST(), 'requestREQUEST');
-Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
-// END: Example
+    // Dump all globals
+    Utils::var_dump(Utils::requestDELETE(), 'requestDELETE');
+    Utils::var_dump(Utils::requestGET(), 'requestGET');
+    Utils::var_dump(Utils::requestHEAD(), 'requestHEAD');
+    Utils::var_dump(Utils::requestPATCH(), 'requestPATCH');
+    Utils::var_dump(Utils::requestPOST(), 'requestPOST');
+    Utils::var_dump(Utils::requestPUT(), 'requestPUT');
+    Utils::var_dump(Utils::requestREQUEST(), 'requestREQUEST');
+    Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
+    // END: Example
 
-// TODO:
-// Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
-// Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-// Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-// Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
-// Add: mb_internal_encoding usage
-//
-// Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils
+    // TODO:
+    // Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
+    // Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+    // Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+    // Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
+    // Add: mb_internal_encoding usage
+    // Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils
+*/
 
 /**
  * A set of static utility functions
@@ -450,7 +451,7 @@ class Utils
         $url = (string) $url;
 
         $queryString = parse_url($url, PHP_URL_QUERY);
-        self::_strParse($queryString, $queryParams);
+        self::strParse($queryString, $queryParams);
 
         return $queryParams;
     }
@@ -460,7 +461,7 @@ class Utils
      *
      * @access public
      * @param string $url Url to redirect to
-     * @param boolean $permanant True to set the header to 'Moved Permanently'. Default is false
+     * @param boolean $permanent True to set the header to 'Moved Permanently'. Default is false
      * @param boolean $validate Validate the url being redirected to. Default is true
      * @return undefined
      */
@@ -519,10 +520,10 @@ class Utils
         // Cache the $_DELETE 'global'
         static $_DELETE;
         if (!isset($_DELETE)) {
-            self::_strParse(self::requestBody(), $_DELETE, []);
+            self::strParse(self::requestBody(), $_DELETE, []);
         }
 
-        return self::_arrayFetchAll($key, $_DELETE);
+        return self::arrayFetchAll($key, $_DELETE);
     }
 
     /**
@@ -534,7 +535,7 @@ class Utils
      */
     public static function requestGET($key = null)
     {
-        return self::_arrayFetchAll($key, $_GET);
+        return self::arrayFetchAll($key, $_GET);
     }
 
     /**
@@ -549,10 +550,10 @@ class Utils
         // Cache the $_HEAD 'global'
         static $_HEAD;
         if (!isset($_HEAD)) {
-            self::_strParse(self::requestSERVER('QUERY_STRING'), $_HEAD, []);
+            self::strParse(self::requestSERVER('QUERY_STRING'), $_HEAD, []);
         }
 
-        return self::_arrayFetchAll($key, $_HEAD);
+        return self::arrayFetchAll($key, $_HEAD);
     }
 
     /**
@@ -595,10 +596,10 @@ class Utils
         // Cache the $_PATCH 'global'
         static $_PATCH;
         if (!isset($_PATCH)) {
-            self::_strParse(self::requestBody(), $_PATCH, []);
+            self::strParse(self::requestBody(), $_PATCH, []);
         }
 
-        return self::_arrayFetchAll($key, $_PATCH);
+        return self::arrayFetchAll($key, $_PATCH);
     }
 
     /**
@@ -610,7 +611,7 @@ class Utils
      */
     public static function requestPOST($key = null)
     {
-        return self::_arrayFetchAll($key, $_POST);
+        return self::arrayFetchAll($key, $_POST);
     }
 
     /**
@@ -625,10 +626,10 @@ class Utils
         // Cache the $_PUT 'global'
         static $_PUT;
         if (!isset($_PUT)) {
-            self::_strParse(self::requestBody(), $_PUT, []);
+            self::strParse(self::requestBody(), $_PUT, []);
         }
 
-        return self::_arrayFetchAll($key, $_PUT);
+        return self::arrayFetchAll($key, $_PUT);
     }
 
     /**
@@ -640,7 +641,7 @@ class Utils
      */
     public static function requestREQUEST($key = null)
     {
-        return self::_arrayFetchAll($key, $_REQUEST);
+        return self::arrayFetchAll($key, $_REQUEST);
     }
 
     /**
@@ -652,7 +653,7 @@ class Utils
      */
     public static function requestSERVER($key = null)
     {
-        return self::_arrayFetchAll($key, $_SERVER);
+        return self::arrayFetchAll($key, $_SERVER);
     }
 
     /**
@@ -928,7 +929,7 @@ class Utils
      * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Either a deep cloned array or the value of the key; otherwise an empty array or null on error
      */
-    private static function _arrayFetchAll($needle, &$haystack, $default = null)
+    private static function arrayFetchAll($needle, &$haystack, $default = null)
     {
         // If null/undefined, then assume the array should be deep cloned
         if (!isset($needle)) {
@@ -940,7 +941,7 @@ class Utils
             $array = [];
 
             foreach ($needle as $key) {
-                $array[$key] = self::_arrayFetchAll($key, $haystack);
+                $array[$key] = self::arrayFetchAll($key, $haystack);
             }
 
             return $array;
@@ -959,7 +960,7 @@ class Utils
      * @access private
      * @param mixed $default Default value if not found. Default is null
      */
-    private static function _strParse($str, &$array, $default = null)
+    private static function strParse($str, &$array, $default = null)
     {
         parse_str($str, $array);
 
