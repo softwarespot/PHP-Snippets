@@ -322,6 +322,20 @@ class Utils
     }
 
     /**
+     * Check if an image url is valid image url e.g. ends with .gif or .jpg
+     *
+     * @access public
+     * @param string $image Image url to check
+     * @return boolean True, is a valid image url; otherwise, false
+     */
+    public static function isImage($image)
+    {
+        $reIsImage = '/(?\.(?:gif|jpe?g|png|webp|svg)$)/';
+
+        return (bool) preg_match($reIsImage, (string) $image);
+    }
+
+    /**
      * Check if a variable is an integer value
      *
      * @access public
