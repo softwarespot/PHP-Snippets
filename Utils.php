@@ -133,7 +133,9 @@ class Utils
         // Maybe use this in the future, URL: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
         // Or URL: https://github.com/paste/Utils/blob/master/src/Paste/Utils.php#L165
 
-        return self::isIPAddress($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $ip = self::requestSERVER('REMOTE_ADDR');
+
+        return self::isIPAddress($ip) ? $ip : null;
     }
 
     /**
@@ -144,7 +146,7 @@ class Utils
      */
     public static function contentType()
     {
-        $contentType = self::_arrayFetchAll('CONTENT_TYPE', $_SERVER);
+        $contentType = self::requestSERVER('CONTENT_TYPE');
 
         // If separated by semi-colons, then get the first part of the content type string
         if (strpos($contentType, ';')) {
@@ -238,7 +240,7 @@ class Utils
      */
     public static function isAjaxRequest()
     {
-        $request = self::_arrayFetchAll('HTTP_X_REQUESTED_WITH', $_SERVER);
+        $request = self::requestSERVER('HTTP_X_REQUESTED_WITH');
 
         return !empty($request) && strtolower($request) === 'xmlhttprequest';
     }
@@ -554,7 +556,7 @@ class Utils
      */
     public static function requestMethod($toUpperCase = true)
     {
-        $method = self::_arrayFetchAll('REQUEST_METHOD', $_SERVER);
+        $method = self::requestSERVER('REQUEST_METHOD');
 
         return $toUpperCase === false ? strtolower($method) : strtoupper($method);
     }
