@@ -46,7 +46,7 @@ Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
 // Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
 // Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
 // Add: mb_internal_encoding usage
-// Useful idea: URL: https://github.com/JBZoo/Utils
+// Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils
 
 /**
  * A set of static utility functions
@@ -153,7 +153,7 @@ class Utils
             $contentType = current(explode(';', $contentType));
         }
 
-        $found = (bool) array_search($contentType, self::$supportedContentTypes);
+        $found = array_search($contentType, self::$supportedContentTypes) !== false;
 
         return $found ? $contentType : null;
     }
@@ -228,6 +228,9 @@ class Utils
 
             return $value;
         }
+
+        // Check the default value is boolean
+        is_bool($doubleEncode) || $doubleEncode = false;
 
         return htmlspecialchars($value, ENT_QUOTES, self::$encoding, $doubleEncode);
     }
@@ -350,8 +353,10 @@ class Utils
                 break;
         }
 
-        // Ensure $exludePrivAndRes is false by default by explicitly checking the type and value
-        if ($exludePrivAndRes === true) {
+        // Check the default value is boolean
+        is_bool($exludePrivAndRes) || $exludePrivAndRes = false;
+
+        if ($exludePrivAndRes) {
             // Use bitwise OR when excluding the private and reserved address ranges
             $type |= FILTER_FLAG_NO_PRIV_RANGE;
             $type |= FILTER_FLAG_NO_RES_RANGE;
@@ -447,8 +452,11 @@ class Utils
      */
     public static function redirect($url, $permanant = false, $validate = true)
     {
+        // Check the default value is boolean
+        is_bool($validate) || $validate = true;
+
         // Ensure $validate is always true by default if a boolean datatype isn't passed
-        if ($validate !== false && !self::isURL($url)) {
+        if (!$validate && !self::isURL($url)) {
             return;
         }
 
@@ -662,6 +670,25 @@ class Utils
         }
 
         return mb_strimwidth($str, 0, $length, '...');
+    }
+
+    /**
+     * Check if a string contains a substring
+     *
+     * @access public
+     * @param string $str String to search within
+     * @param string $search String to search for
+     * @param  boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
+     * @return boolean True, the substring was found; otherwise, false
+     */
+    public static function strContains($str, $search, $caseSensitive = true)
+    {
+        // Enforce the default value of true
+        if ($caseSensitive === false) {
+            return mb_stripos($str, $search) !== false;
+        }
+
+        return mb_strpos($str, $search) !== false;
     }
 
     /**
