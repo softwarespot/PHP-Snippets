@@ -734,6 +734,34 @@ class Utils
     }
 
     /**
+     * Sanitize an e-mail string
+     *
+     * @access public
+     * @param string $email E-mail string to sanitize
+     * @return string Sanitized e-mail string
+     */
+    public static function strSanitizeEmail($email)
+    {
+        return filter_var((string) $email, FILTER_SANITIZE_EMAIL);
+    }
+
+    /**
+     * Sanitize a string
+     *
+     * @access public
+     * @param string $str String to sanitize
+     * @return string Sanitized string; otherwise, null on error
+     */
+    public static function strSanitizeString($str)
+    {
+        if (!is_string($str)) {
+            return null;
+        }
+
+        return self::htmlEscape($str);
+    }
+
+    /**
      * Convert a snake case string to camel case string
      * Idea by Laravel, URL: https://github.com/laravel/framework/blob/master/src/Illuminate/Support/Str.php
      *
