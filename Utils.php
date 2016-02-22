@@ -423,6 +423,25 @@ class Utils
     }
 
     /**
+     * Check if a variable is a valid JSON string
+     * Idea by cherrylabs, URL: https://github.com/cherrylabs/arx-utils/blob/master/src/Arx/Utils/Utils.php
+     *
+     * @access public
+     * @param string $str String to check
+     * @return boolean True, is a valid JSON string; otherwise, false
+     */
+    public static function isJSON($str)
+    {
+        if(empty($str) || !is_string($str)) {
+            return false;
+        }
+
+        json_decode($str);
+
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
      * Determines if the current version of PHP is equal to or greater than the supplied value
      * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Common.php
      *
