@@ -61,7 +61,7 @@ class Utils
 {
     // Constants
     const IP_ADDRESS_V4 = 'ipv4';
-    const IP_ADDRESS_V6 = 'ipv4';
+    const IP_ADDRESS_V6 = 'ipv6';
 
     /**
      * Default character encoding for mb_* functions
