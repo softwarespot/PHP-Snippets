@@ -49,7 +49,7 @@ namespace App;
 // Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
 // Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
 // Add: mb_internal_encoding usage
-// Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils
+// Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils or https://github.com/cherrylabs/arx-utils/tree/master/src/Arx/Utils
 
 /**
  * A set of static utility functions
@@ -159,6 +159,33 @@ class Utils
         $found = array_search($contentType, self::$supportedContentTypes) !== false;
 
         return $found ? $contentType : null;
+    }
+
+    /**
+     * Get the contents of a url using a curl request
+     *
+     * @access public
+     * @param string $url URL to get the contents of
+     * @return string|null String contents of the url; otherwise, null on error
+     */
+    public static function curlGet($url)
+    {
+        if (!self::isURL*$url)) {
+            return null;
+        }
+
+        $request = curl_init($url);
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($request, CURLOPT_TIMEOUT, 30);
+        // curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
+        $contents = curl_exec($request);
+        if ($contents === true) {
+            $contents = null;
+        }
+
+        curl_close($request);
+
+        return $contents;
     }
 
     /**
@@ -750,7 +777,7 @@ class Utils
      *
      * @access public
      * @param string $str String to sanitize
-     * @return string Sanitized string; otherwise, null on error
+     * @return string|null Sanitized string; otherwise, null on error
      */
     public static function strSanitizeString($str)
     {
