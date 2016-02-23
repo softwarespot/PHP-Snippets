@@ -170,7 +170,7 @@ class Utils
      */
     public static function curlGet($url)
     {
-        if (!self::isURL*$url)) {
+        if (!self::isURL($url)) {
             return null;
         }
 
