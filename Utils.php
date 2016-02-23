@@ -166,6 +166,7 @@ class Utils
      *
      * @access public
      * @param string $url URL to get the contents of
+     * @param array|null $options Optional curl options passed to curl_setopt()
      * @return string|null String contents of the url; otherwise, null on error
      */
     public static function curlGet($url)
@@ -175,6 +176,13 @@ class Utils
         }
 
         $request = curl_init($url);
+        
+        if (is_array($options)) {
+            foreach ($options as $key => $val) {
+                curl_setopt($request, $key, $val);
+            }
+        }
+        
         curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($request, CURLOPT_TIMEOUT, 30);
         // curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
