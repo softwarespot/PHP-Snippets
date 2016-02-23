@@ -394,9 +394,9 @@ class Utils
             return false;
         }
 
-        $ip = strtolower($type);
+        $type = strtolower($type);
 
-        switch ($ip) {
+        switch ($type) {
             case self::IP_ADDRESS_V4:
                 $type = FILTER_FLAG_IPV4;
                 break;
