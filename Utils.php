@@ -432,7 +432,7 @@ class Utils
      */
     public static function isJSON($str)
     {
-        if(empty($str) || !is_string($str)) {
+        if (empty($str) || !is_string($str)) {
             return false;
         }
 
