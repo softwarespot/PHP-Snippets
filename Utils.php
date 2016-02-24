@@ -5,7 +5,7 @@ namespace App;
 /**
  * A set of static utility functions
  *
- * Note: All string functions support UTF-8 strings, unless Utils::encoding is overridden with another character set
+ * Note: All string functions support UTF-8 strings, unless Utils::$encoding is overridden with another character set
  * Style: The coding style for this utility class is PSR-2 with all functions being named using camel-case
  */
 class Utils
