@@ -2,54 +2,6 @@
 
 namespace App;
 
-/*
-    // START: Example
-    // Use the following namespace
-    use App\Utils;
-
-    $utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
-
-    Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
-    Utils::var_dump(Utils::contentType(), 'contentType');
-    Utils::var_dump(Utils::guid(), 'guid');
-    Utils::var_dump(Utils::isAjaxRequest() ? 'AJAX request' : 'Not an AJAX request', 'isAjaxRequest');
-    Utils::var_dump(Utils::isFloat(100.99), 'isFloat');
-    Utils::var_dump(Utils::isFloat(100), 'isFloat :: Error');
-    Utils::var_dump(Utils::isInteger(100), 'isInteger');
-    Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
-    Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
-    Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
-    Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
-    Utils::var_dump(Utils::strCompact($utf8String, 40), 'strCompact');
-    Utils::var_dump(Utils::strToLower($utf8String), 'strToLower');
-    Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
-    Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
-
-    // Cast an object to an array
-    $obj = new \stdClass;
-    $obj->foo = 'foo';
-    $obj->bar = 'bar';
-    Utils::var_dump(Utils::toArray($obj), 'toArray');
-
-    // Dump all globals
-    Utils::var_dump(Utils::requestDELETE(), 'requestDELETE');
-    Utils::var_dump(Utils::requestGET(), 'requestGET');
-    Utils::var_dump(Utils::requestHEAD(), 'requestHEAD');
-    Utils::var_dump(Utils::requestPATCH(), 'requestPATCH');
-    Utils::var_dump(Utils::requestPOST(), 'requestPOST');
-    Utils::var_dump(Utils::requestPUT(), 'requestPUT');
-    Utils::var_dump(Utils::requestREQUEST(), 'requestREQUEST');
-    Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
-    // END: Example
-*/
-
-// TODO: Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129 Add: strEndsWith,
-// URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php Add: strStartsWith, URL:
-// https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php Add: is*, URL:
-// https://github.com/nette/utils/blob/master/src/Utils/Validators.php Add: mb_internal_encoding usage Useful ideas: URL:
-// https://github.com/JBZoo/Utils or https://github.com/nette/utils or https://github.com/cherrylabs/arx-utils/tree/master/src/Arx/Utils or
-// https://github.com/dreamfactorysoftware/php-utils/blob/develop/src/Curl.php
-
 /**
  * A set of static utility functions
  *
@@ -77,37 +29,6 @@ class Utils
         'jsonp' => 'application/javascript',
         'text' => 'text/plain',
     ];
-
-        /**
-     * Create an autoloader for when an unloaded class is instantiated
-     *
-     * @access public
-     * @param  array $paths Paths to search within
-     * @return undefined
-     */
-    public static function autoloader(array $paths)
-    {
-        $extension = '.php';
-
-        // Create an anonymous function referencing the outer variables
-        spl_autoload_register(function ($class) use ($paths, $extension) {
-            // Check if the class has already been loaded
-            if (class_exists($class, false)) {
-                return;
-            }
-
-            foreach ($paths as $path) {
-                // Sanitize the filepath
-                $filePath = realpath($path . '/' . $class . $extension);
-
-                if (is_file($filePath)) {
-                    // Require will produce an E_COMPILE_ERROR if the file doesn't exist, whereas include will throw a warning
-                    require_once($filePath);
-                    break;
-                }
-            }
-        });
-    }
 
     /**
      * Get a value from an array based on a particular key
@@ -138,6 +59,37 @@ class Utils
         if (is_array($array)) {
             $array[$key] = $value;
         }
+    }
+
+    /**
+     * Create an autoloader for when an unloaded class is instantiated
+     *
+     * @access public
+     * @param  array $paths Paths to search within
+     * @return undefined
+     */
+    public static function autoloader(array $paths)
+    {
+        $extension = '.php';
+
+        // Create an anonymous function referencing the outer variables
+        spl_autoload_register(function ($class) use ($paths, $extension) {
+            // Check if the class has already been loaded
+            if (class_exists($class, false)) {
+                return;
+            }
+
+            foreach ($paths as $path) {
+                // Sanitize the filepath
+                $filePath = realpath($path . '/' . $class . $extension);
+
+                if (is_file($filePath)) {
+                    // Require will produce an E_COMPILE_ERROR if the file doesn't exist, whereas include will throw a warning
+                    require_once($filePath);
+                    break;
+                }
+            }
+        });
     }
 
     /**
@@ -1082,3 +1034,55 @@ class Utils
         }
     }
 }
+
+// TODO List
+// Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
+// Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
+// Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
+// Add: mb_internal_encoding usage
+// Useful links: URL:
+// https://github.com/JBZoo/Utilshttps://github.com/nette/utils
+// https://github.com/cherrylabs/arx-utils/tree/master/src/Arx/Utils
+// https://github.com/dreamfactorysoftware/php-utils/blob/develop/src/Curl.php
+
+// START: Example
+/*
+    // Use the following namespace
+    // use App\Utils;
+
+    $utf8String = 'In linguistics, umlaut (from German "sound alteration") is a sound change in which a vowel is pronounced more like a following vowel or semivowel. (ö ü) - Wikipedia, 2016';
+
+    Utils::var_dump(Utils::clientIPAddress(), 'clientIPAddress');
+    Utils::var_dump(Utils::contentType(), 'contentType');
+    Utils::var_dump(Utils::guid(), 'guid');
+    Utils::var_dump(Utils::isAjaxRequest() ? 'AJAX request' : 'Not an AJAX request', 'isAjaxRequest');
+    Utils::var_dump(Utils::isFloat(100.99), 'isFloat');
+    Utils::var_dump(Utils::isFloat(100), 'isFloat :: Error');
+    Utils::var_dump(Utils::isInteger(100), 'isInteger');
+    Utils::var_dump(Utils::isPHP('5.6'), 'isPHP');
+    Utils::var_dump(Utils::isUTF8($utf8String), 'isUTF8');
+    Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php?key_1=value1&key_2=value2&key_3=value3'), 'parseQueryParams');
+    Utils::var_dump(Utils::parseQueryParams('http://example.com/index.php'), 'parseQueryParams :: Error');
+    Utils::var_dump(Utils::strCompact($utf8String, 40), 'strCompact');
+    Utils::var_dump(Utils::strToLower($utf8String), 'strToLower');
+    Utils::var_dump(Utils::strToUpper($utf8String), 'strToUpper');
+    Utils::var_dump(Utils::toArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 'toArray');
+
+    // Cast an object to an array
+    $obj = new \stdClass;
+    $obj->foo = 'foo';
+    $obj->bar = 'bar';
+    Utils::var_dump(Utils::toArray($obj), 'toArray');
+
+    // Dump all globals
+    Utils::var_dump(Utils::requestDELETE(), 'requestDELETE');
+    Utils::var_dump(Utils::requestGET(), 'requestGET');
+    Utils::var_dump(Utils::requestHEAD(), 'requestHEAD');
+    Utils::var_dump(Utils::requestPATCH(), 'requestPATCH');
+    Utils::var_dump(Utils::requestPOST(), 'requestPOST');
+    Utils::var_dump(Utils::requestPUT(), 'requestPUT');
+    Utils::var_dump(Utils::requestREQUEST(), 'requestREQUEST');
+    Utils::var_dump(Utils::requestSERVER(), 'requestSERVER');
+*/
+// END: Example
