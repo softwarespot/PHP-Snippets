@@ -43,13 +43,12 @@ namespace App;
     // END: Example
 */
 
-// TODO:
-// Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
-// Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-// Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-// Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
-// Add: mb_internal_encoding usage
-// Useful ideas: URL: https://github.com/JBZoo/Utils or https://github.com/nette/utils or https://github.com/cherrylabs/arx-utils/tree/master/src/Arx/Utils
+// TODO: Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129 Add: strEndsWith,
+// URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php Add: strStartsWith, URL:
+// https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php Add: is*, URL:
+// https://github.com/nette/utils/blob/master/src/Utils/Validators.php Add: mb_internal_encoding usage Useful ideas: URL:
+// https://github.com/JBZoo/Utils or https://github.com/nette/utils or https://github.com/cherrylabs/arx-utils/tree/master/src/Arx/Utils or
+// https://github.com/dreamfactorysoftware/php-utils/blob/develop/src/Curl.php
 
 /**
  * A set of static utility functions
@@ -79,22 +78,7 @@ class Utils
         'text' => 'text/plain',
     ];
 
-    /**
-     * Get a value from an array based on a particular key
-     *
-     * @access public
-     * @param mixed $needle Key to search for
-     * @param array $haystack Array to search within
-     * @param mixed $default Default value if not found. Default is null
-     * @return mixed|null The value from the array; otherwise, $default on error
-     */
-    public static function arrayGet($needle, array &$haystack, $default = null)
-    {
-        // Using array_key_exists() denotes if the key actually exists
-        return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
-    }
-
-    /**
+        /**
      * Create an autoloader for when an unloaded class is instantiated
      *
      * @access public
@@ -123,6 +107,37 @@ class Utils
                 }
             }
         });
+    }
+
+    /**
+     * Get a value from an array based on a particular key
+     *
+     * @access public
+     * @param mixed $needle Key to search for
+     * @param array $haystack Array to search within
+     * @param mixed $default Default value if not found. Default is null
+     * @return mixed|null The value from the array; otherwise, $default on error
+     */
+    public static function arrayGet($needle, array &$haystack, $default = null)
+    {
+        // Using array_key_exists() denotes if the key actually exists
+        return is_array($haystack) && array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
+    }
+
+    /**
+     * Set a value in an array using a key
+     *
+     * @access public
+     * @param array &$array Array to set
+     * @param mixed $key Key to set
+     * @param mixed $value Value to set with
+     * @return undefined
+     */
+    public static function arraySet(&$array, $key, $value)
+    {
+        if (is_array($array)) {
+            $array[$key] = $value;
+        }
     }
 
     /**
@@ -176,13 +191,13 @@ class Utils
         }
 
         $request = curl_init($url);
-        
+
         if (is_array($options)) {
             foreach ($options as $key => $val) {
                 curl_setopt($request, $key, $val);
             }
         }
-        
+
         curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($request, CURLOPT_TIMEOUT, 30);
         // curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
