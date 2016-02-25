@@ -52,7 +52,7 @@ class Utils
      * @param array &$array Array to set
      * @param mixed $key Key to set
      * @param mixed $value Value to set with
-     * @return undefined
+     * @return void
      */
     public static function arraySet(&$array, $key, $value)
     {
@@ -66,7 +66,7 @@ class Utils
      *
      * @access public
      * @param  array $paths Paths to search within
-     * @return undefined
+     * @return void
      */
     public static function autoloader(array $paths)
     {
@@ -499,7 +499,7 @@ class Utils
      * @param string $url Url to redirect to
      * @param boolean $permanent True to set the header to 'Moved Permanently'. Default is false
      * @param boolean $validate Validate the url being redirected to. Default is true
-     * @return undefined
+     * @return void
      */
     public static function redirect($url, $permanent = false, $validate = true)
     {
@@ -960,7 +960,7 @@ class Utils
      * @param mixed $data Data to dump
      * @param string $label Label to output next to the data. Default is 'dump'
      * @param boolean $echo True to echo to the output or return as a buffer string
-     * @return string|undefined If $echo is true, then the data is output; otherwise, a buffer string is returned
+     * @return string|void If $echo is true, then the data is output; otherwise, a buffer string is returned
      */
     public static function var_dump($data, $label = 'dump', $echo = true)
     {
@@ -988,14 +988,14 @@ class Utils
      * Get a value from an array based on a particular key or a deep cloned array
      *
      * @access private
-     * @param mixed|null $needle Optional key to search for. If left null/undefined, then the entire array is deep cloned
+     * @param mixed|null $needle Optional key to search for. If left null/void, then the entire array is deep cloned
      * @param array $haystack Array to search within
      * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Either a deep cloned array or the value of the key; otherwise an empty array or null on error
      */
     private static function arrayFetchAll($needle, &$haystack, $default = null)
     {
-        // If null/undefined, then assume the array should be deep cloned
+        // If null/void, then assume the array should be deep cloned
         if (!isset($needle)) {
             $needle = array_keys($haystack);
         }
