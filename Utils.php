@@ -94,16 +94,29 @@ class Utils
 
     /**
      * Get the client's IP address
+     * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Input.php
      *
      * @access public
+     * @param boolean $proxy Check the IP address if behind a proxy. Default is false
      * @return string Client's IP address; otherwise, null on error
      */
-    public static function clientIPAddress()
+    public static function clientIPAddress($proxy = false)
     {
-        // Maybe use this in the future, URL: http://stackoverflow.com/questions/3003145/how-to-get-the-client-ip-address-in-php
-        // Or URL: https://github.com/paste/Utils/blob/master/src/Paste/Utils.php#L165
-
         $ip = self::requestSERVER('REMOTE_ADDR');
+
+        // Enforce the default value
+        if ($proxy === true) {
+            foreach (['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP'] as $header) {
+                $proxyIP = self::requestSERVER($header);
+                if ($proxyIP !== null) {
+                    // Some proxies typically list the whole chain of IP addresses through which the client has reached us
+                    sscanf($proxyIP, '%[^,]', $proxyIP);
+                    if (self::isIPAddress($proxyIP)) {
+                        return $proxyIP;
+                    }
+                }
+            }
+        }
 
         return self::isIPAddress($ip) ? $ip : null;
     }
@@ -1011,7 +1024,8 @@ class Utils
             return $array;
         }
 
-        if (isset($haystack[$needle])) {
+        // A reliable approach to checking if a key exists in the array
+        if (isset($haystack[$needle]) || array_key_exists($needle, $haystack)) {
             return $haystack[$needle];
         }
 
