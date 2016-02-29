@@ -756,6 +756,23 @@ class Utils
     }
 
     /**
+     * Check if a substring begins at the end of a string
+     *
+     * @access public
+     * @param string $str String to search within
+     * @param string $search String to search for
+     * @param  boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
+     * @return boolean True, the substring begins at the end of the string; otherwise, false
+     */
+    public static function strEndsWith($str, $search, $caseSensitive = true)
+    {
+        // Enforce the default value of true
+        is_bool($caseSensitive) || $caseSensitive = true;
+
+        return substr_compare($str, $search, 0, -mb_strlen($search), $caseSensitive) === 0;
+    }
+
+    /**
      * Retrieve the length of a given string
      *
      * @access public
@@ -793,6 +810,23 @@ class Utils
         }
 
         return self::htmlEscape($str);
+    }
+
+    /**
+     * Check if a substring begins at the start of a string
+     *
+     * @access public
+     * @param string $str String to search within
+     * @param string $search String to search for
+     * @param  boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
+     * @return boolean True, the substring begins at the start of the string; otherwise, false
+     */
+    public static function strStartsWith($str, $search, $caseSensitive = true)
+    {
+        // Enforce the default value of true
+        is_bool($caseSensitive) || $caseSensitive = true;
+
+        return substr_compare($str, $search, 0, mb_strlen($search), $caseSensitive) === 0;
     }
 
     /**
