@@ -157,10 +157,9 @@ class Utils
 
         $request = curl_init($url);
 
+        // Set the additional options for the request
         if (is_array($options)) {
-            foreach ($options as $key => $val) {
-                curl_setopt($request, $key, $val);
-            }
+            curl_setopt_array($request, $options);
         }
 
         curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
