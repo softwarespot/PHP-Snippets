@@ -31,6 +31,20 @@ class Utils
     ];
 
     /**
+     * Filter out keys and their respective values from an array
+     *
+     * @param array $haystack Array to filter
+     * @param array $keys String array of keys to filter out
+     * @return array Filtered array
+     */
+    public static function arrayFilterKeys(array $haystack, array $keys)
+    {
+        return array_filter($haystack, function($key) use ($keys) {
+            return !in_array($key, $keys);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
      * Get a value from an array based on a particular key
      *
      * @access public
