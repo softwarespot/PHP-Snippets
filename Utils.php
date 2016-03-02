@@ -33,6 +33,7 @@ class Utils
     /**
      * Filter out keys and their respective values from an array
      *
+     * @access public
      * @param array $haystack Array to filter
      * @param array $keys String array of keys to filter out
      * @return array Filtered array
