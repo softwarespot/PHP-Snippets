@@ -785,6 +785,24 @@ class Utils
 
         return substr_compare($str, $search, 0, -mb_strlen($search), $caseSensitive) === 0;
     }
+    
+    /**
+     * Check if a string is empty (trims all whitespace)
+     * Note: The different between this and empty(), is it checks if the type is a string
+     *
+     * @access public
+     * @param string $str String to check
+     * @return boolean True, the string is empty (or not a string); otherwise, false
+     */
+    public static function strIsEmpty($str)
+    {
+        // If it's not a string by default, then set as being 'empty' i.e. true
+        if (!is_string($str)) {
+            return true;
+        }
+
+        return Utils::strLen(trim($str)) === 0;
+    }
 
     /**
      * Retrieve the length of a given string
