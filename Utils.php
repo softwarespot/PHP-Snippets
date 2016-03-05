@@ -785,7 +785,7 @@ class Utils
 
         return substr_compare($str, $search, 0, -mb_strlen($search), $caseSensitive) === 0;
     }
-    
+
     /**
      * Check if a string is empty (trims all whitespace)
      * Note: The different between this and empty(), is it checks if the type is a string
@@ -842,6 +842,25 @@ class Utils
         }
 
         return self::htmlEscape($str);
+    }
+
+    /**
+     * Returns the portion of string specified by the start and length parameters.
+     *
+     * @param  string  $string
+     * @param  int  $start
+     * @param  int|null  $length
+     * @return string
+     */
+    /**
+     * Retrieve part of a string
+     *
+     * @access public
+     * @see http://php.net/manual/en/function.mb-substr.php or more details
+     */
+    public static function strSubtr($str, $start, $length = null)
+    {
+        return mb_substr($str, $start, $length, self::$encoding);
     }
 
     /**
