@@ -845,14 +845,6 @@ class Utils
     }
 
     /**
-     * Returns the portion of string specified by the start and length parameters.
-     *
-     * @param  string  $string
-     * @param  int  $start
-     * @param  int|null  $length
-     * @return string
-     */
-    /**
      * Retrieve part of a string
      *
      * @access public
