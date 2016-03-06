@@ -69,11 +69,9 @@ class Utils
      * @param mixed $value Value to set with
      * @return void
      */
-    public static function arraySet(&$array, $key, $value)
+    public static function arraySet(array &$array, $key, $value)
     {
-        if (is_array($array)) {
-            $array[$key] = $value;
-        }
+        $array[$key] = $value;
     }
 
     /**
@@ -817,6 +815,30 @@ class Utils
     }
 
     /**
+     * Parse a simple template string using Mustache-like syntax e.g. {{example}}
+     *
+     * @access public
+     * @param string $template Template string to parse
+     * @param array $context An associative array of key/values pairs to replace in the template string
+     * @return string Parsed template string; otherwise, empty string on error
+     */
+    public static function strParseTemplate($template, array $context)
+    {
+        if (!is_string($template)) {
+            return '';
+        }
+
+        // Build a replacement array with curly braces around the keys
+        $replace = [];
+        foreach ($context as $key => $value) {
+            $replace["{{{$key}}}"] = $value;
+        }
+
+        // Interpolate the replacement values in the template
+        return strtr($template, $replace);
+    }
+
+    /**
      * Sanitize an e-mail string
      *
      * @access public
@@ -833,15 +855,11 @@ class Utils
      *
      * @access public
      * @param string $str String to sanitize
-     * @return string|null Sanitized string; otherwise, null on error
+     * @return string|null Sanitized string; otherwise, empty string on error
      */
     public static function strSanitizeString($str)
     {
-        if (!is_string($str)) {
-            return null;
-        }
-
-        return self::htmlEscape($str);
+        return is_string($str) ? self::htmlEscape($str) : '';
     }
 
     /**
@@ -1128,8 +1146,6 @@ class Utils
 
 // TODO List
 // Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
-// Add: strEndsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
-// Add: strStartsWith, URL: https://github.com/dontdrinkandroot/utils.php/blob/master/src/Dontdrinkandroot/Utils/StringUtils.php
 // Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
 // Add: mb_internal_encoding usage
 // Useful links: URL:
