@@ -57,7 +57,7 @@ class Utils
     public static function arrayGet($needle, array &$haystack, $default = null)
     {
         // Using array_key_exists() denotes if the key actually exists
-        return is_array($haystack) && array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
+        return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
     }
 
     /**
