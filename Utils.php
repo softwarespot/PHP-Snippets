@@ -954,8 +954,10 @@ class Utils
      */
     public static function strToSnakeCase($str, $delimiter = '_')
     {
+        $reToSnakeCase = '/(.)(?=[A-Z])/';
+
         // Pre-append the delimiter before an upper-case character
-        $str = preg_replace('/(.)(?=[A-Z])/', '$1' . $delimiter, $str);
+        $str = preg_replace($reToSnakeCase, '$1' . $delimiter, $str);
 
         return mb_strtolower($str);
     }
