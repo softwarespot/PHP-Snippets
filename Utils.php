@@ -1149,7 +1149,6 @@ class Utils
 // TODO List
 // Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
 // Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
-// Add: mb_internal_encoding usage
 // Useful links: URL:
 // https://github.com/JBZoo/Utilshttps://github.com/nette/utils
 // https://github.com/cherrylabs/arx-utils/tree/master/src/Arx/Utils
