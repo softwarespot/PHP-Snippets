@@ -201,6 +201,27 @@ class Utils
     }
 
     /**
+     * Write to a filepath
+     *
+     * @access public
+     * @param string $filePath Filepath to write data to
+     * @param  string $data Data to append or overwrite the file with
+     * @param  boolean $overwrite Overwrite the file contents. Default is false
+     * @return boolean True, the file was written to; otherwise, false
+     */
+    public static function fileWrite($filePath, $data, $overwrite = false)
+    {
+        $flags = LOCK_EX;
+
+        // Enforce the default value
+        if ($overwrite !== true) {
+            $flags |= FILE_APPEND;
+        }
+
+        return (boolean) file_put_contents($filePath, $data, $flags);
+    }
+
+    /**
      * Generate a globally unique identifier (GUID)
      *
      * @access public
