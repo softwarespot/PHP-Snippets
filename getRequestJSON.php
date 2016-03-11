@@ -9,7 +9,13 @@
  */
 function getRequestJSON($default = null)
 {
-    $contents = file_get_contents('php://input');
+    // Cache the request body
+    static $_contents = null;
 
-    return $contents === false ? $default : json_decode($contents);
+    // Cache the request body if not done already
+    if ($_contents === null) {
+        $_contents = file_get_contents('php://input');
+    }
+
+    return $_contents === false ? $default : json_decode($_contents);
 }

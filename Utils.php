@@ -576,18 +576,14 @@ class Utils
     public static function requestBody()
     {
         // Cache the request body
-        static $_input;
+        static $_input = null;
 
         // Cache the request body if not done already
-        if (!isset($_input)) {
+        if ($_input === null) {
             $_input = file_get_contents('php://input');
-            if ($_input === false) {
-                // Set to null instead of using the default false
-                $_input = null;
-            }
         }
 
-        return $_input;
+        return $_input === false ? null : $_input;
     }
 
     /**
