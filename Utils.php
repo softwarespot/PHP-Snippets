@@ -199,6 +199,18 @@ class Utils
         echo self::var_dump($data, $label, false);
         exit;
     }
+    
+    /**
+    * Builds a filepath with the appropriate directory separator
+    *
+    * @access public
+    * @param string $value0...n Unlimited number of parts e.g. fileBuildPath('C:', 'dir_0', 'dir_1');
+    * @return string Built filepath
+    */
+    public static function fileBuildPath() {
+        // PHP 5.6+ use ...$parts instead
+        return join(DIRECTORY_SEPARATOR, func_get_args());
+    }
 
     /**
      * Write to a filepath
