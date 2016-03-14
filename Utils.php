@@ -209,7 +209,7 @@ class Utils
     */
     public static function fileBuildPath() {
         // PHP 5.6+ use ...$parts instead
-        return join(DIRECTORY_SEPARATOR, func_get_args());
+        return implode(DIRECTORY_SEPARATOR, func_get_args());
     }
 
     /**
