@@ -538,14 +538,14 @@ class Utils
      * @param array $include Optional array of keys to include. Default is include all keys
      * @return array An associative array
      */
-    public static function objectToArray(object $obj, $include)
+    public static function objToArray(object $obj, $include)
     {
         $defaultInclude = count($include) === 0;
 
         $mapped = [];
         foreach ($obj as $key => $value) {
             if ($defaultInclude || in_array($key, $include)) {
-                $mapped[$key] = is_array($value) || is_object($value) ? self::objectRemap($value, $include) : $value;
+                $mapped[$key] = is_array($value) || is_object($value) ? self::objToArray($value, $include) : $value;
             }
         }
 
