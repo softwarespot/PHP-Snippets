@@ -538,7 +538,7 @@ class Utils
      * @param array $include Optional array of keys to include. Default is include all keys
      * @return array An associative array
      */
-    public static function objToArray(object $obj, $include)
+    public static function objToArray($obj, $include)
     {
         $defaultInclude = count($include) === 0;
 
