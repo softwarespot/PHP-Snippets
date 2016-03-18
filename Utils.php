@@ -199,7 +199,7 @@ class Utils
         echo self::var_dump($data, $label, false);
         exit;
     }
-    
+
     /**
     * Builds a filepath with the appropriate directory separator
     *
@@ -529,6 +529,27 @@ class Utils
     public static function isUTF8($value)
     {
         return mb_check_encoding($value, self::$encoding);
+    }
+
+    /**
+     * Map an object to an associative array with an optional array of included keys
+     *
+     * @param object $obj Object to remap
+     * @param array $include Optional array of keys to include. Default is include all keys
+     * @return array An associative array
+     */
+    public static function objectToArray(object $obj, $include)
+    {
+        $defaultInclude = count($include) === 0;
+
+        $mapped = [];
+        foreach ($obj as $key => $value) {
+            if ($defaultInclude || in_array($key, $include)) {
+                $mapped[$key] = is_array($value) || is_object($value) ? self::objectRemap($value, $include) : $value;
+            }
+        }
+
+        return $mapped;
     }
 
     /**
