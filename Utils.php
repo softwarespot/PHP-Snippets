@@ -46,6 +46,18 @@ class Utils
     }
 
     /**
+     * Get the first value in an array
+     *
+     * @access public
+     * @param array &$array Array to get the first value of
+     * @return mixed First value
+     */
+    public static function arrayFirst(array &$array)
+    {
+        return reset($array);
+    }
+
+    /**
      * Get a value from an array based on a particular key
      *
      * @access public
@@ -58,6 +70,18 @@ class Utils
     {
         // Using array_key_exists() denotes if the key actually exists
         return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
+    }
+
+    /**
+     * Get the last value in an array
+     *
+     * @access public
+     * @param array &$array Array to get the last value of
+     * @return mixed Last value
+     */
+    public static function arrayLast(array &$array)
+    {
+        return end($array);
     }
 
     /**
