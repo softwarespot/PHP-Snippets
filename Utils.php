@@ -121,7 +121,8 @@ class Utils
                 $filePath = realpath($path . '/' . $class . $extension);
 
                 if (is_file($filePath)) {
-                    // Require will produce an E_COMPILE_ERROR if the file doesn't exist, whereas include will throw a warning
+                    // Require will produce an E_COMPILE_ERROR if the file doesn't exist,
+                    // whereas include will throw a warning
                     require_once($filePath);
                     break;
                 }
@@ -143,10 +144,18 @@ class Utils
 
         // Enforce the default value
         if ($proxy === true) {
-            foreach (['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP'] as $header) {
+            $headers = [
+                'HTTP_X_FORWARDED_FOR',
+                'HTTP_CLIENT_IP',
+                'HTTP_X_CLIENT_IP',
+                'HTTP_X_CLUSTER_CLIENT_IP'
+            ];
+
+            foreach ($headers as $header) {
                 $proxyIP = self::requestSERVER($header);
                 if ($proxyIP !== null) {
-                    // Some proxies typically list the whole chain of IP addresses through which the client has reached us
+                    // Some proxies typically list the whole chain of IP addresses through
+                    // which the client has reached us
                     sscanf($proxyIP, '%[^,]', $proxyIP);
                     if (self::isIPAddress($proxyIP)) {
                         return $proxyIP;
@@ -184,9 +193,10 @@ class Utils
      * @access public
      * @param string $url URL to get the contents of
      * @param array|null $options Optional curl options passed to curl_setopt()
+     * @param array $options Optional array of allowed HTTP status codes. Default is HTTP_OK (200)
      * @return string|null String contents of the url; otherwise, null on error
      */
-    public static function curlGet($url)
+    public static function curlGet($url, $options = null, $allowed = [200])
     {
         if (!self::isURL($url)) {
             return null;
@@ -203,8 +213,15 @@ class Utils
         curl_setopt($request, CURLOPT_TIMEOUT, 30);
         // curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
         $contents = curl_exec($request);
-        if ($contents === true) {
-            $contents = null;
+
+        $error = curl_error($request);
+        if ($error) {
+            throw new \Exception("Curl: Error code was $error");
+        } else {
+            $statusCode = curl_getinfo($request, CURLINFO_HTTP_CODE);
+            if (!in_array($statusCode, $allowed)) {
+                throw new \Exception("Curl: Invalid response from $url\nHttpResponse: $statusCode\n$contents\n");
+            }
         }
 
         curl_close($request);
