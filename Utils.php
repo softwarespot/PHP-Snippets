@@ -573,6 +573,19 @@ class Utils
     }
 
     /**
+     * Create a locked file
+     *
+     * @access public
+     * @return boolean True, the lock file exists; otherwise, false
+     */
+    public static function lock($lockFile)
+    {
+        $fp = fopen($lockFile, 'w+');
+
+        return !flock($fp, LOCK_EX|LOCK_NB);
+    }
+
+    /**
      * Map an object to an associative array with an optional array of included keys
      *
      * @param object $obj Object to remap
