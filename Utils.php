@@ -576,11 +576,12 @@ class Utils
      * Create a locked file
      *
      * @access public
+     * @param string $name Lock file name, that is appended with the .lock extension
      * @return boolean True, the lock file exists; otherwise, false
      */
-    public static function lock($lockFile)
+    public static function lock($name)
     {
-        $fp = fopen($lockFile, 'w+');
+        $fp = fopen($name . '.lock', 'w+');
 
         return !flock($fp, LOCK_EX|LOCK_NB);
     }
