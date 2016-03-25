@@ -248,7 +248,8 @@ class Utils
     * @param string $value0...n Unlimited number of parts e.g. fileBuildPath('C:', 'dir_0', 'dir_1');
     * @return string Built filepath
     */
-    public static function fileBuildPath() {
+    public static function fileBuildPath()
+    {
         // PHP 5.6+ use ...$parts instead
         return implode(DIRECTORY_SEPARATOR, func_get_args());
     }
