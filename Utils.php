@@ -31,6 +31,18 @@ class Utils
     ];
 
     /**
+     * Remove all null/empty/false values from an array
+     *
+     * @access public
+     * @param  array $array Array to clean
+     * @return array Cleaned array
+     */
+    public static function arrayClean(array $array)
+    {
+        return array_filter($array);
+    }
+
+    /**
      * Filter out keys and their respective values from an array
      *
      * @access public
