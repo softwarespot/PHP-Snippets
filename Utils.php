@@ -13,6 +13,7 @@ class Utils
     // Constants
     const IP_ADDRESS_V4 = 'ipv4';
     const IP_ADDRESS_V6 = 'ipv6';
+    const STR_EMPTY = '';
 
     /**
      * Default character encoding for mb_* functions
@@ -52,9 +53,38 @@ class Utils
      */
     public static function arrayFilterKeys(array $haystack, array $keys)
     {
-        return array_filter($haystack, function($key) use ($keys) {
+        return array_filter($haystack, function ($key) use ($keys) {
             return !in_array($key, $keys);
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Flatten a deep nested array
+     *
+     * @access public
+     * @param  array $array Array to flatten
+     * @param  boolean $preserveKeys Preserve the keys. Default is false
+     * @return array Flattened array
+     */
+    public static function arrayFlatten(array $array, $preserveKeys = false)
+    {
+        $flattened = [];
+        $cb = null;
+
+        // Enforce the default value
+        if ($preserveKeys === true) {
+            $cb = function ($value, $key) use (&$flattened) {
+                $flattened[$key] = $value;
+            };
+        } else {
+            $cb = function ($value) use (&$flattened) {
+                $flattened[] = $value;
+            };
+        }
+
+        array_walk_recursive($array, $cb);
+
+        return $flattened;
     }
 
     /**
@@ -340,13 +370,13 @@ class Utils
             $keys = array_keys($value);
 
             foreach ($keys as $key) {
-                $value[$key] = html_escape($value[$key], $doubleEncode);
+                $value[$key] = self::html_escape($value[$key], $doubleEncode);
             }
 
             return $value;
         }
 
-        // Check the default value is boolean
+        // Enforce the default value of false
         is_bool($doubleEncode) || $doubleEncode = false;
 
         return htmlspecialchars($value, ENT_QUOTES, self::$encoding, $doubleEncode);
@@ -470,7 +500,8 @@ class Utils
      *
      * @access public
      * @param string $ip IP address to validated
-     * @param string $type IP protocol: Utils::IP_ADDRESS_V4 ('ipv4') or Utils::IP_ADDRESS_V6 ('ipv6'). Default is Utils::IP_ADDRESS_V4
+     * @param string $type IP protocol: Utils::IP_ADDRESS_V4 ('ipv4') or Utils::IP_ADDRESS_V6 ('ipv6').
+     * Default is Utils::IP_ADDRESS_V4
      * @param boolean $exludePrivAndRes Exclude private and reserved ranges. Default it false
      * @return boolean True, is a valid IP address; otherwise, false
      */
@@ -640,6 +671,19 @@ class Utils
     }
 
     /**
+     * Get the percentage difference between two values
+     *
+     * @access public
+     * @param number $old Previous value
+     * @param number $new Current value
+     * @return string Percentage difference value
+     */
+    public static function percentDiff($old, $new)
+    {
+        return (($old - $new / $old) * 100) . '%';
+    }
+
+    /**
      * Redirect to a url
      *
      * @access public
@@ -692,7 +736,8 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the DELETE array
-     * @return array|mixed Value of the key or a deep clone of the DELETE array; otherwise, null or an empty array on error
+     * @return array|mixed Value of the key or a deep clone of the DELETE array; otherwise,
+     * null or an empty array on error
      */
     public static function requestDELETE($key = null)
     {
@@ -722,7 +767,8 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_HEAD array
-     * @return array|mixed Value of the key or a deep clone of the $_HEAD array; otherwise, null or an empty array on error
+     * @return array|mixed Value of the key or a deep clone of the $_HEAD array; otherwise,
+     * null or an empty array on error
      */
     public static function requestHEAD($key = null)
     {
@@ -753,7 +799,8 @@ class Utils
      * Get the request method
      *
      * @access public
-     * @param boolean $toUpperCase Convert the method to upper-case if true; otherwise, lower-case if false. Default is true
+     * @param boolean $toUpperCase Convert the method to upper-case if true; otherwise,
+     * lower-case if false. Default is true
      * @return string Formatted request method
      */
     public static function requestMethod($toUpperCase = true)
@@ -768,7 +815,8 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the PATCH array
-     * @return array|mixed Value of the key or a deep clone of the PATCH array; otherwise, null or an empty array on error
+     * @return array|mixed Value of the key or a deep clone of the PATCH array; otherwise,
+     * null or an empty array on error
      */
     public static function requestPATCH($key = null)
     {
@@ -786,7 +834,8 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the POST array
-     * @return array|mixed Value of the key or a deep clone of the POST array; otherwise, null or an empty array on error
+     * @return array|mixed Value of the key or a deep clone of the POST array; otherwise,
+     * null or an empty array on error
      */
     public static function requestPOST($key = null)
     {
@@ -816,7 +865,8 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the REQUEST array
-     * @return array|mixed Value of the key or a deep clone of the REQUEST array; otherwise, null or an empty array on error
+     * @return array|mixed Value of the key or a deep clone of the REQUEST array; otherwise,
+     * null or an empty array on error
      */
     public static function requestREQUEST($key = null)
     {
@@ -828,7 +878,8 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_SERVER array
-     * @return array|mixed Value of the key or a deep clone of the $_SERVER array; otherwise, null or an empty array on error
+     * @return array|mixed Value of the key or a deep clone of the $_SERVER array; otherwise,
+     * null or an empty array on error
      */
     public static function requestSERVER($key = null)
     {
@@ -943,7 +994,7 @@ class Utils
     public static function strParseTemplate($template, array $context)
     {
         if (!is_string($template)) {
-            return '';
+            return STR_EMPTY;
         }
 
         // Build a replacement array with curly braces around the keys
@@ -973,11 +1024,15 @@ class Utils
      *
      * @access public
      * @param string $str String to sanitize
-     * @return string|null Sanitized string; otherwise, empty string on error
+     * @return string|null Sanitized string; otherwise, throws an InvalidArgumentException exception
      */
-    public static function strSanitizeString($str)
+    public static function strSanitize($str)
     {
-        return is_string($str) ? self::htmlEscape($str) : '';
+        if (is_string($str)) {
+            self::htmlEscape($str);
+        }
+
+        throw new \InvalidArgumentException('Invalid argument, was not a string datatype');
     }
 
     /**
@@ -1020,7 +1075,7 @@ class Utils
     {
         $str = str_replace(['-', '_'], ' ', $str);
         $str = ucwords($str);
-        $str =  str_replace(' ', '', $str);
+        $str =  str_replace(' ', STR_EMPTY, $str);
 
         return lcfirst($str);
     }
@@ -1115,8 +1170,10 @@ class Utils
      *
      * @access public
      * @param mixed $data Data to convert
-     * @param string $delimiter The optional delimiter parameter sets the field delimiter (one character only). Null will use the default value (,)
-     * @param string $enclosure The optional enclosure parameter sets the field enclosure (one character only). Null will use the default value (")
+     * @param string $delimiter The optional delimiter parameter sets the field delimiter
+     * (one character only). Null will use the default value (,)
+     * @param string $enclosure The optional enclosure parameter sets the field enclosure
+     * (one character only). Null will use the default value (")
      * @return string A CSV string; otherwise, null on error
      */
     public static function toCSV($data, $delimiter = ',', $enclosure = '"')
@@ -1162,7 +1219,7 @@ class Utils
                 break;
             }
 
-            // Suppressing the "array to string conversion" notice. Retain the "evil" @ here.
+            // Suppressing the "array to string conversion" notice. Retain the "evil" @ here
             $record = @array_map('strval', $record);
 
             // Returns the length of the string written or false
