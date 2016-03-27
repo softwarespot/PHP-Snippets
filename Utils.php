@@ -22,6 +22,12 @@ class Utils
     protected static $encoding = 'UTF-8';
 
     /**
+     * Locked filepaths
+     * @var array
+     */
+    protected static $locks = [];
+
+    /**
      * List of supported formats aka content types
      * @var array
      */
@@ -626,8 +632,13 @@ class Utils
     public static function lock($name)
     {
         $fp = fopen($name . '.lock', 'w+');
+        if (!flock($fp, LOCK_EX|LOCK_NB)) {
+            return true;
+        }
 
-        return !flock($fp, LOCK_EX|LOCK_NB);
+        $locks[] = $fp;
+
+        return false;
     }
 
     /**
