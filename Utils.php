@@ -66,6 +66,7 @@ class Utils
 
     /**
      * Flatten a deep nested array
+     * Idea by nette, URL: https://github.com/nette/utils/blob/master/src/Utils
      *
      * @access public
      * @param  array $array Array to flatten
@@ -992,6 +993,27 @@ class Utils
     public static function strLen($str)
     {
         return mb_strlen($str);
+    }
+
+    /**
+     * Standardize line endings to unix-like.
+     *
+     * @access public
+     * @param  string  UTF-8 encoding or 8-bit
+     * @return string
+     */
+
+    /**
+     * Standardize line endings to unix-like
+     * Idea by nette, URL: https://github.com/nette/utils/blob/master/src/Utils
+     *
+     * @access public
+     * @param string $str String to normalize line endings
+     * @return string Normalized string
+     */
+    public static function strNormalizeEOL($str)
+    {
+        return str_replace(["\r\n", "\r"], "\n", $str);
     }
 
     /**
