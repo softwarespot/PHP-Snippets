@@ -253,14 +253,15 @@ class Utils
 
         $request = curl_init($url);
 
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($request, CURLOPT_TIMEOUT, 30);
+        // curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
+
         // Set the additional options for the request
         if (is_array($options)) {
             curl_setopt_array($request, $options);
         }
 
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_TIMEOUT, 30);
-        // curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
         $contents = curl_exec($request);
 
         $error = curl_error($request);
@@ -333,7 +334,7 @@ class Utils
     public static function guid()
     {
         // Cache whether there is a native function available
-        static $_isNativeFn;
+        static $_isNativeFn = false;
 
         // Use the native function if it exists
         if ($_isNativeFn || function_exists('com_create_guid')) {
@@ -677,7 +678,7 @@ class Utils
         $url = (string) $url;
 
         $queryString = parse_url($url, PHP_URL_QUERY);
-        self::strParse($queryString, $queryParams);
+        self::strParse($queryString, $queryParams, null);
 
         return $queryParams;
     }
@@ -748,18 +749,19 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the DELETE array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the DELETE array; otherwise,
      * null or an empty array on error
      */
-    public static function requestDELETE($key = null)
+    public static function requestDELETE($key = null, $default = null)
     {
         // Cache the $_DELETE 'global'
-        static $_DELETE;
-        if (!isset($_DELETE)) {
+        static $_DELETE = null;
+        if ($_DELETE === null) {
             self::strParse(self::requestBody(), $_DELETE, []);
         }
 
-        return self::arrayFetchAll($key, $_DELETE);
+        return self::arrayFetchAll($key, $_DELETE, $default);
     }
 
     /**
@@ -767,11 +769,12 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the GET array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the GET array; otherwise, null or an empty array on error
      */
-    public static function requestGET($key = null)
+    public static function requestGET($key = null, $default = null)
     {
-        return self::arrayFetchAll($key, $_GET);
+        return self::arrayFetchAll($key, $_GET, $default);
     }
 
     /**
@@ -779,18 +782,19 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_HEAD array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the $_HEAD array; otherwise,
      * null or an empty array on error
      */
-    public static function requestHEAD($key = null)
+    public static function requestHEAD($key = null, $default = null)
     {
         // Cache the $_HEAD 'global'
         static $_HEAD;
-        if (!isset($_HEAD)) {
-            self::strParse(self::requestSERVER('QUERY_STRING'), $_HEAD, []);
+        if ($_HEAD === null) {
+            self::strParse(self::requestSERVER('QUERY_STRING', ''), $_HEAD, []);
         }
 
-        return self::arrayFetchAll($key, $_HEAD);
+        return self::arrayFetchAll($key, $_HEAD, $default);
     }
 
     /**
@@ -827,18 +831,19 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the PATCH array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the PATCH array; otherwise,
      * null or an empty array on error
      */
-    public static function requestPATCH($key = null)
+    public static function requestPATCH($key = null, $default = null)
     {
         // Cache the $_PATCH 'global'
-        static $_PATCH;
-        if (!isset($_PATCH)) {
+        static $_PATCH = null;
+        if ($_PATCH === null) {
             self::strParse(self::requestBody(), $_PATCH, []);
         }
 
-        return self::arrayFetchAll($key, $_PATCH);
+        return self::arrayFetchAll($key, $_PATCH, $default);
     }
 
     /**
@@ -846,12 +851,13 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the POST array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the POST array; otherwise,
      * null or an empty array on error
      */
-    public static function requestPOST($key = null)
+    public static function requestPOST($key = null, $default = null)
     {
-        return self::arrayFetchAll($key, $_POST);
+        return self::arrayFetchAll($key, $_POST, $default);
     }
 
     /**
@@ -859,17 +865,18 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the PUT array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the PUT array; otherwise, null or an empty array on error
      */
-    public static function requestPUT($key = null)
+    public static function requestPUT($key = null, $default = null)
     {
         // Cache the $_PUT 'global'
         static $_PUT;
-        if (!isset($_PUT)) {
+        if ($_PUT === null) {
             self::strParse(self::requestBody(), $_PUT, []);
         }
 
-        return self::arrayFetchAll($key, $_PUT);
+        return self::arrayFetchAll($key, $_PUT, $default);
     }
 
     /**
@@ -877,12 +884,13 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the REQUEST array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the REQUEST array; otherwise,
      * null or an empty array on error
      */
-    public static function requestREQUEST($key = null)
+    public static function requestREQUEST($key = null, $default = null)
     {
-        return self::arrayFetchAll($key, $_REQUEST);
+        return self::arrayFetchAll($key, $_REQUEST, $default);
     }
 
     /**
@@ -890,12 +898,13 @@ class Utils
      *
      * @access public
      * @param mixed $key Optional key to search for; otherwise, a deep clone of the $_SERVER array
+     * @param mixed $default Default value if not found. Default is null
      * @return array|mixed Value of the key or a deep clone of the $_SERVER array; otherwise,
      * null or an empty array on error
      */
-    public static function requestSERVER($key = null)
+    public static function requestSERVER($key = null, $default = null)
     {
-        return self::arrayFetchAll($key, $_SERVER);
+        return self::arrayFetchAll($key, $_SERVER, $default);
     }
 
     /**
@@ -1308,10 +1317,10 @@ class Utils
      * @access private
      * @param mixed|null $needle Optional key to search for. If left null/void, then the entire array is deep cloned
      * @param array $haystack Array to search within
-     * @param mixed $default Default value if not found. Default is null
+     * @param mixed $default Default value if not found
      * @return array|mixed Either a deep cloned array or the value of the key; otherwise an empty array or null on error
      */
-    private static function arrayFetchAll($needle, &$haystack, $default = null)
+    private static function arrayFetchAll($needle, &$haystack, $default)
     {
         // If null/void, then assume the array should be deep cloned
         if (!isset($needle)) {
@@ -1323,7 +1332,7 @@ class Utils
             $array = [];
 
             foreach ($needle as $key) {
-                $array[$key] = self::arrayFetchAll($key, $haystack);
+                $array[$key] = self::arrayFetchAll($key, $haystack, $default);
             }
 
             return $array;
@@ -1341,9 +1350,9 @@ class Utils
      * Basic wrapper for parse_str which returns a default value on error. See parse_str docs for more details
      *
      * @access private
-     * @param mixed $default Default value if not found. Default is null
+     * @param mixed $default Default value if not found
      */
-    private static function strParse($str, &$array, $default = null)
+    private static function strParse($str, &$array, $default)
     {
         parse_str($str, $array);
 
