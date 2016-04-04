@@ -789,7 +789,7 @@ class Utils
     public static function requestHEAD($key = null, $default = null)
     {
         // Cache the $_HEAD 'global'
-        static $_HEAD;
+        static $_HEAD = null;
         if ($_HEAD === null) {
             self::strParse(self::requestSERVER('QUERY_STRING', ''), $_HEAD, []);
         }
@@ -871,7 +871,7 @@ class Utils
     public static function requestPUT($key = null, $default = null)
     {
         // Cache the $_PUT 'global'
-        static $_PUT;
+        static $_PUT = null;
         if ($_PUT === null) {
             self::strParse(self::requestBody(), $_PUT, []);
         }
