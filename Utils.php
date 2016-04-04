@@ -303,6 +303,20 @@ class Utils
         // PHP 5.6+ use ...$parts instead
         return implode(DIRECTORY_SEPARATOR, func_get_args());
     }
+    
+    /**
+     * Read from a filepath
+     *
+     * @access public
+     * @param string $filePath Filepath to read the data of
+     * @return mixed Read data; otherwise, null on error
+     */
+    public static function fileRead($filePath)
+    {
+        $data = file_get_contents($filePath);
+
+        return $data !== false ? $data : null;
+    }
 
     /**
      * Write to a filepath
