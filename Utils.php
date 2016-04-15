@@ -303,7 +303,7 @@ class Utils
         // PHP 5.6+ use ...$parts instead
         return implode(DIRECTORY_SEPARATOR, func_get_args());
     }
-    
+
     /**
      * Read from a filepath
      *
@@ -648,6 +648,10 @@ class Utils
     public static function lock($name)
     {
         $fp = fopen($name . '.lock', 'w+');
+        if ($fp === false) {
+            return false;
+        }
+
         if (!flock($fp, LOCK_EX|LOCK_NB)) {
             return true;
         }
