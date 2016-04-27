@@ -65,6 +65,18 @@ class Utils
     }
 
     /**
+     * Get the first value in an array
+     *
+     * @access public
+     * @param array &$array Array to get the first value of
+     * @return mixed First value
+     */
+    public static function arrayFirst(array &$array)
+    {
+        return reset($array);
+    }
+
+    /**
      * Flatten a deep nested array
      * Idea by nette, URL: https://github.com/nette/utils/blob/master/src/Utils
      *
@@ -92,18 +104,6 @@ class Utils
         array_walk_recursive($array, $cb);
 
         return $flattened;
-    }
-
-    /**
-     * Get the first value in an array
-     *
-     * @access public
-     * @param array &$array Array to get the first value of
-     * @return mixed First value
-     */
-    public static function arrayFirst(array &$array)
-    {
-        return reset($array);
     }
 
     /**
