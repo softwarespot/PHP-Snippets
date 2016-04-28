@@ -41,7 +41,7 @@ class Utils
      * Remove all null/empty/false values from an array
      *
      * @access public
-     * @param  array $array Array to clean
+     * @param array $array Array to clean
      * @return array Cleaned array
      */
     public static function arrayClean(array $array)
@@ -81,8 +81,8 @@ class Utils
      * Idea by nette, URL: https://github.com/nette/utils/blob/master/src/Utils
      *
      * @access public
-     * @param  array $array Array to flatten
-     * @param  boolean $preserveKeys Preserve the keys. Default is false
+     * @param array $array Array to flatten
+     * @param boolean $preserveKeys Preserve the keys. Default is false
      * @return array Flattened array
      */
     public static function arrayFlatten(array $array, $preserveKeys = false)
@@ -151,7 +151,7 @@ class Utils
      * Create an autoloader for when an unloaded class is instantiated
      *
      * @access public
-     * @param  array $paths Paths to search within
+     * @param array $paths Paths to search within
      * @return void
      */
     public static function autoloader(array $paths)
@@ -323,8 +323,8 @@ class Utils
      *
      * @access public
      * @param string $filePath Filepath to write data to
-     * @param  string $data Data to append or overwrite the file with
-     * @param  boolean $overwrite Overwrite the file contents. Default is false
+     * @param string $data Data to append or overwrite the file with
+     * @param boolean $overwrite Overwrite the file contents. Default is false
      * @return boolean True, the file was written to; otherwise, false
      */
     public static function fileWrite($filePath, $data, $overwrite = false)
@@ -962,7 +962,7 @@ class Utils
      * @access public
      * @param string $str String to search within
      * @param string $search String to search for
-     * @param  boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
+     * @param boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
      * @return boolean True, the substring was found; otherwise, false
      */
     public static function strContains($str, $search, $caseSensitive = true)
@@ -981,7 +981,7 @@ class Utils
      * @access public
      * @param string $str String to search within
      * @param string $search String to search for
-     * @param  boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
+     * @param boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
      * @return boolean True, the substring begins at the end of the string; otherwise, false
      */
     public static function strEndsWith($str, $search, $caseSensitive = true)
@@ -1026,7 +1026,7 @@ class Utils
      * Standardize line endings to unix-like.
      *
      * @access public
-     * @param  string  UTF-8 encoding or 8-bit
+     * @param string UTF-8 encoding or 8-bit
      * @return string
      */
 
@@ -1112,7 +1112,7 @@ class Utils
      * @access public
      * @param string $str String to search within
      * @param string $search String to search for
-     * @param  boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
+     * @param boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
      * @return boolean True, the substring begins at the start of the string; otherwise, false
      */
     public static function strStartsWith($str, $search, $caseSensitive = true)
@@ -1135,7 +1135,7 @@ class Utils
     {
         $str = str_replace(['-', '_'], ' ', $str);
         $str = ucwords($str);
-        $str =  str_replace(' ', STR_EMPTY, $str);
+        $str = str_replace(' ', STR_EMPTY, $str);
 
         return lcfirst($str);
     }
@@ -1382,7 +1382,7 @@ class Utils
 }
 
 // TODO List
-// Add: Remove diacritics, URL:  https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
+// Add: Remove diacritics, URL: https://github.com/johnstyle/php-utils/blob/master/src/Johnstyle/PhpUtils/String.php#L129
 // Add: is*, URL: https://github.com/nette/utils/blob/master/src/Utils/Validators.php
 // Useful links: URL:
 // https://github.com/JBZoo/Utilshttps://github.com/nette/utils
