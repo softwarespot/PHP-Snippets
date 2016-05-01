@@ -87,8 +87,8 @@ class Utils
      */
     public static function arrayFlatten(array $array, $preserveKeys = false)
     {
-        $flattened = [];
         $cb = null;
+        $flattened = [];
 
         // Enforce the default value
         if ($preserveKeys === true) {
@@ -591,10 +591,16 @@ class Utils
      */
     public static function isPHP($version)
     {
+        static $_isPHP = [];
+
         // Cast as a string
         $version = (string) $version;
 
-        return version_compare(PHP_VERSION, $version, '>=');
+        if (!isset($_isPHP[$version])) {
+            $_isPHP[$version] = version_compare(PHP_VERSION, $version, '>=');
+        }
+
+        return $_isPHP[$version];
     }
 
     /**
