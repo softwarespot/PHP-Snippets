@@ -1044,7 +1044,7 @@ class Utils
     }
 
     /**
-     * Check if a string is empty (trims all whitespace)
+     * Check if a string is empty (trims all white-space)
      * Note: The different between this and empty(), is it checks if the type is a string
      *
      * @access public
