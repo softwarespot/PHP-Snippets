@@ -242,7 +242,7 @@ class Utils
      * @access public
      * @param string $url URL to get the contents of
      * @param array|null $options Optional curl options passed to curl_setopt()
-     * @param array $options Optional array of allowed HTTP status codes. Default is HTTP_OK (200)
+     * @param array $allowed Optional array of allowed HTTP status codes. Default is HTTP_OK (200)
      * @return string|null String contents of the url; otherwise, null on error
      */
     public static function curlGet($url, $options = null, $allowed = [200])
