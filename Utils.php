@@ -932,6 +932,32 @@ class Utils
     }
 
     /**
+     * Send response data as either JSON or JSON-P
+     * Idea by Mathias Bynens, URL: https://gist.github.com/mathiasbynens/5547352
+     *
+     * @access public
+     * @param mixed $data Data to send
+     * @param function|null $callback Optional callback function for when using JSON-P
+     */
+    public static function responseJSON($data, $callback = null)
+    {
+        $reNonCallbackChars = '/[^a-zA-Z0-9$_.]/s';
+        $callback = isset($callback) ? '/**/' . preg_replace($reNonCallbackChars, '', $callback) : null;
+
+        // Send the appropriate MIME type e.g. JSON or JSON-P/JavaScript
+        $mimeType = $callback ? 'json' : 'javascript';
+        header("Content-Type: application/$mimeType;charset=UTF-8");
+
+        // There’s no reason not to allow CORS for public APIs
+        // See http://annevankesteren.nl/2012/12/cors-101 for details.
+        // header('Access-Control-Allow-Origin: *');
+
+        // Output the end result
+        $encoded = json_encode($data);
+        echo $callback ? "$callback($encoded)" : $encoded;
+    }
+
+    /**
      * Clean UTF-8 strings so it contains only valid characters as set
      * Idea by CodeIgniter, URL: https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Utf8.php
      *
@@ -996,6 +1022,25 @@ class Utils
         is_bool($caseSensitive) || $caseSensitive = true;
 
         return substr_compare($str, $search, 0, -mb_strlen($search), $caseSensitive) === 0;
+    }
+
+    /**
+     * Check if a string is a valid callback function
+     * Idea by Mathias Bynens, URL: https://gist.github.com/mathiasbynens/5547352
+     *
+     * @access public
+     * @param string $str String to check
+     * @return boolean True, is a valid callback function string; otherwise, false
+     */
+    public static function strIsCallback($str)
+    {
+        if (!is_string($str)) {
+            return false;
+        }
+
+        $reIsCallback = '/^[a-zA-Z0-9$_.]+$/';
+
+        return (boolean) preg_match($reIsCallback, $str, $matches);
     }
 
     /**
