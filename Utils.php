@@ -954,7 +954,7 @@ class Utils
 
         // Output the end result
         $encoded = json_encode($data);
-        echo $callback ? "$callback($encoded)" : $encoded;
+        echo $callback ? "$callback($encoded);\n" : $encoded;
     }
 
     /**
