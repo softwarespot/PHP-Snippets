@@ -989,13 +989,13 @@ class Utils
     }
 
     /**
-     * Check if a string contains a substring
+     * Check if a string contains a sub-string
      *
      * @access public
      * @param string $str String to search within
      * @param string $search String to search for
      * @param boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
-     * @return boolean True, the substring was found; otherwise, false
+     * @return boolean True, the sub-string was found; otherwise, false
      */
     public static function strContains($str, $search, $caseSensitive = true)
     {
@@ -1008,13 +1008,13 @@ class Utils
     }
 
     /**
-     * Check if a substring begins at the end of a string
+     * Check if a sub-string begins at the end of a string
      *
      * @access public
      * @param string $str String to search within
      * @param string $search String to search for
      * @param boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
-     * @return boolean True, the substring begins at the end of the string; otherwise, false
+     * @return boolean True, the sub-string begins at the end of the string; otherwise, false
      */
     public static function strEndsWith($str, $search, $caseSensitive = true)
     {
@@ -1158,13 +1158,13 @@ class Utils
     }
 
     /**
-     * Check if a substring begins at the start of a string
+     * Check if a sub-string begins at the start of a string
      *
      * @access public
      * @param string $str String to search within
      * @param string $search String to search for
      * @param boolean $caseSensitive True, case-sensitive matching; otherwise, false. Default is true
-     * @return boolean True, the substring begins at the start of the string; otherwise, false
+     * @return boolean True, the sub-string begins at the start of the string; otherwise, false
      */
     public static function strStartsWith($str, $search, $caseSensitive = true)
     {
