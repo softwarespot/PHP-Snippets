@@ -197,7 +197,7 @@ class Utils
                 'HTTP_X_FORWARDED_FOR',
                 'HTTP_CLIENT_IP',
                 'HTTP_X_CLIENT_IP',
-                'HTTP_X_CLUSTER_CLIENT_IP'
+                'HTTP_X_CLUSTER_CLIENT_IP',
             ];
 
             foreach ($headers as $header) {
@@ -1091,7 +1091,7 @@ class Utils
      */
     public static function strNormalizeEOL($str)
     {
-        return str_replace(["\r\n", "\r"], "\n", $str);
+        return str_replace(["\r\n", "\r",], "\n", $str);
     }
 
     /**
@@ -1111,7 +1111,7 @@ class Utils
         // Build a replacement array with curly braces around the keys
         $replace = [];
         foreach ($context as $key => $value) {
-            $replace["{{{$key}}}"] = $value;
+            $replace["{{{$key}}}",] = $value;
         }
 
         // Interpolate the replacement values in the template
