@@ -18,7 +18,7 @@ function createGUID()
         return com_create_guid();
     }
 
-    // Generate a random GUID
+    // Generate a random globally unique identifier (GUID)
     return sprintf(
         '%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
         mt_rand(0, 65535),
