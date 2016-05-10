@@ -12,7 +12,7 @@ function getRequestJSON($default = null)
     // Cache the request body
     static $_contents = null;
 
-    // Cache the request body if not done already
+    // Cache the request body if not done so already
     if ($_contents === null) {
         $_contents = file_get_contents('php://input');
     }
