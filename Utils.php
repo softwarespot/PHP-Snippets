@@ -420,6 +420,7 @@ class Utils
     /**
      * Check if an array is associative
      * Idea by goldenSniperOS, URL: https://github.com/goldenSniperOS/api-participo/blob/90f123ecc300adae95e7ec353866c76c93b36449/app/functions/assoc.php
+     * 
      * @access public
      * @param array $array Array to check
      * @return boolean True, the array is associative; otherwise, false
