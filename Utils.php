@@ -283,7 +283,7 @@ class Utils
      * Dump and die (aka exit)
      *
      * @access public
-     * @see dump() for more details
+     * @see dump() for more details on usage
      */
     public static function dd($data, $label = 'dump')
     {
