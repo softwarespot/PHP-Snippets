@@ -420,7 +420,7 @@ class Utils
     /**
      * Check if an array is associative
      * Idea by goldenSniperOS, URL: https://github.com/goldenSniperOS/api-participo/blob/90f123ecc300adae95e7ec353866c76c93b36449/app/functions/assoc.php
-     * 
+     *
      * @access public
      * @param array $array Array to check
      * @return boolean True, the array is associative; otherwise, false
@@ -938,12 +938,16 @@ class Utils
      *
      * @access public
      * @param mixed $data Data to send
-     * @param function|null $callback Optional callback function for when using JSON-P
+     * @param string|null $callback Optional callback function string for when using JSON-P
      */
     public static function responseJSON($data, $callback = null)
     {
-        $reNonCallbackChars = '/[^a-zA-Z0-9$_.]/s';
-        $callback = isset($callback) ? '/**/' . preg_replace($reNonCallbackChars, '', $callback) : null;
+        if (is_string($callback)) {
+            $reNonCallbackChars = '/[^a-zA-Z0-9$_.]/s';
+            $callback = '/**/' . preg_replace($reNonCallbackChars, '', strip_tags($callback));
+        } else {
+            $callback = null;
+        }
 
         // Send the appropriate MIME type e.g. JSON or JSON-P/JavaScript
         $mimeType = $callback ? 'json' : 'javascript';
