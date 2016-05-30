@@ -1421,7 +1421,7 @@ class Utils
     }
 
     /**
-     * Basic wrapper for parse_str which returns a default value on error. See parse_str docs for more details
+     * Basic wrapper for parse_str which returns a default value on error. See parse_str in PHP for more details
      *
      * @access private
      * @param mixed $default Default value if not found
